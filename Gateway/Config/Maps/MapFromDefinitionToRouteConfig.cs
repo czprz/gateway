@@ -13,5 +13,7 @@ public class MapFromDefinitionToRouteConfig : Profile
             .ReverseMap();
         CreateMap<HeaderDefinition, HeaderMatch>()
             .ReverseMap();
+        CreateMap<Models.Proxy, Proxy>()
+            .ReverseMap();
     }
 }

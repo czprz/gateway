@@ -8,8 +8,15 @@ public class RouteDefinition
     public IReadOnlyList<QueryParameterDefinition>? QueryParameters { get; init; }
     public IReadOnlyList<HeaderDefinition>? Headers { get; init; }
     
-    public string ProxyAddress { get; init; }
+    public Proxy Proxy { get; init; }
 }
+
+public class Proxy
+{
+    public string Address { get; init; }
+    public string HealthProbeAddress { get; init; }
+}
+
 
 public class QueryParameterDefinition
 {

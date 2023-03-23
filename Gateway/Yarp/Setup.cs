@@ -9,5 +9,7 @@ public static class Setup
     {
         builder.Services.AddReverseProxy()
             .LoadFromMemory(new Collection<RouteConfig>(), new Collection<ClusterConfig>());
+
+        builder.Services.AddTransient<IYarpFacade, YarpFacade>();
     }
 }

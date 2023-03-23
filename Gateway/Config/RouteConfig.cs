@@ -8,7 +8,13 @@ public class RouteConfig
     public IReadOnlyList<QueryParameterMatch>? QueryParameters { get; init; }
     public IReadOnlyList<HeaderMatch>? Headers { get; init; }
     
-    public string ProxyAddress { get; init; }
+    public Proxy Proxy { get; init; }
+}
+
+public class Proxy
+{
+    public string Address { get; init; }
+    public string HealthProbeAddress { get; init; }
 }
 
 public class QueryParameterMatch
