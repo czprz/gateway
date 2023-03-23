@@ -8,7 +8,7 @@ public class RouteDefinition
     public IReadOnlyList<QueryParameterDefinition>? QueryParameters { get; init; }
     public IReadOnlyList<HeaderDefinition>? Headers { get; init; }
     
-    public Proxy Proxy { get; init; }
+    public IReadOnlyList<Proxy> Proxy { get; init; }
 }
 
 public class Proxy

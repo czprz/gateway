@@ -1,5 +1,5 @@
 using AutoMapper;
-using Gateway.Config;
+using RouteConfig = Gateway.Config.RouteConfig;
 
 namespace Gateway.Yarp.Maps;
 
@@ -8,17 +8,12 @@ public class MapFromRouteConfigToYarpClusterConfig : Profile
     public MapFromRouteConfigToYarpClusterConfig()
     {
         CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.ClusterConfig>()
-            .ForMember(o => o.ClusterId, opt => opt.MapFrom(o => Guid.NewGuid()))
-            .ForMember(o => o.Destinations, opt => opt.MapFrom(o =>
-                new Dictionary<string, global::Yarp.ReverseProxy.Configuration.DestinationConfig>
+            .ForMember(d => d.ClusterId, opt => opt.MapFrom(o => Guid.NewGuid()))
+            .ForMember(d => d.Destinations, opt => opt.MapFrom(s => s.Proxy.Select(x =>
+                new global::Yarp.ReverseProxy.Configuration.DestinationConfig
                 {
-                    {
-                        o.Proxy.Address,
-                        new global::Yarp.ReverseProxy.Configuration.DestinationConfig
-                        {
-                            Address = o.Proxy.Address
-                        }
-                    }
-                }.AsReadOnly()));
+                    Address = x.Address,
+                    Health = x.HealthProbeAddress
+                }).ToDictionary(k => k.Address).AsReadOnly()));
     }
 }
