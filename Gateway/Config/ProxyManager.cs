@@ -1,34 +1,29 @@
-using AutoMapper;
-using Yarp.ReverseProxy.Configuration;
+using Gateway.Yarp;
 
-namespace Yarp.Config;
+namespace Gateway.Config;
 
 public class ProxyManager : IProxyManager
 {
-    private readonly InMemoryConfigProvider _configProvider;
-    private readonly IMapper _mapper;
+    private readonly IYarpFacade _yarpFacade;
 
-    public ProxyManager(InMemoryConfigProvider configProvider, IMapper mapper)
+    public ProxyManager(IYarpFacade yarpFacade)
     {
-        _configProvider = configProvider;
-        _mapper = mapper;
+        _yarpFacade = yarpFacade;
     }
 
-    public IReadOnlyList<Mapping.RouteConfig> GetRoutes()
+    public IReadOnlyList<RouteConfig> GetRoutes()
     {
-        return _configProvider.GetConfig().Routes.Select(_mapper.Map<RouteConfig, Mapping.RouteConfig>).ToList().AsReadOnly();
+        return _yarpFacade.Read();
     }
 
-    public void AddRoute(Mapping.RouteConfig route)
+    public void AddRoute(RouteConfig route)
     {
-        var routeConfig = _mapper.Map<Mapping.RouteConfig, RouteConfig>(route);
-        var cluster = new ClusterConfig();
-        
-        _configProvider.Update(new[] { routeConfig }, new[] { cluster });
+        _yarpFacade.Update(route);
+        // TODO: Save DB
     }
 
     public void RemoveRoute(string route)
     {
-        throw new NotImplementedException();
+        // TODO: Remove from Yarp and DB
     }
 }

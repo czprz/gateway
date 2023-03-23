@@ -1,6 +1,4 @@
-using Yarp.Config.Mapping;
-
-namespace Yarp.Config;
+namespace Gateway.Config;
 
 public interface IProxyManager
 {

@@ -1,12 +1,10 @@
-using System.Collections.ObjectModel;
 using AutoMapper;
+using Gateway.Config;
+using Gateway.Config.Maps;
+using Gateway.Endpoints;
+using Gateway.Yarp;
+using Gateway.Yarp.Maps;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Yarp.Config;
-using Yarp.Config.Mapping;
-using Yarp.Endpoints;
-
-using YarpRouteConfig = Yarp.ReverseProxy.Configuration.RouteConfig;
-using YarpClusterConfig = Yarp.ReverseProxy.Configuration.ClusterConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,21 +12,21 @@ var config = new MapperConfiguration(cfg =>
 {
     cfg.AddProfile<MapFromDefinitionToRouteConfig>();
     cfg.AddProfile<MapFromRouteConfigToYarpRouteConfig>();
+    cfg.AddProfile<MapFromRouteConfigToYarpClusterConfig>();
 });
 
 var mapper = config.CreateMapper();
 builder.Services.AddSingleton(mapper);
 
-builder.Services.AddTransient<IProxyManager, ProxyManager>();
+builder.AddReverseProxy();
 
-builder.Services.AddReverseProxy()
-    .LoadFromMemory(new Collection<YarpRouteConfig>(), new Collection<YarpClusterConfig>());
+builder.Services.AddTransient<IProxyManager, ProxyManager>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = "https://localhost/core"; // Replace with your OAuth provider URL
-        options.Audience = "gateway"; // Replace with your app's audience name
+        options.Authority = Environment.GetEnvironmentVariable("AUTHORITY__ADDRESS");
+        options.Audience = Environment.GetEnvironmentVariable("AUTHORITY__AUDIENCE");
     });
 
 builder.Services.AddAuthorization(options =>
@@ -40,6 +38,7 @@ builder.Services.AddAuthorization(options =>
 var app = builder.Build();
 
 app.MapReverseProxy();
+
 app.AddRoutingEndpoints();
 app.UseRouting();
 
