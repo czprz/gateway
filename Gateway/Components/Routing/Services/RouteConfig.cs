@@ -1,4 +1,4 @@
-namespace Gateway.Config;
+namespace Gateway.Components.Routing.Services;
 
 public class RouteConfig
 {
@@ -7,6 +7,8 @@ public class RouteConfig
     public string? Path { get; init; }
     public IReadOnlyList<QueryParameterMatch>? QueryParameters { get; init; }
     public IReadOnlyList<HeaderMatch>? Headers { get; init; }
+    
+    public bool? AuthenticationRequired { get; init; }
     
     public IReadOnlyList<Proxy> Proxy { get; init; }
 }

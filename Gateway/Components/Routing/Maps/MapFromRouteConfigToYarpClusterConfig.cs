@@ -1,7 +1,7 @@
 using AutoMapper;
-using RouteConfig = Gateway.Config.RouteConfig;
+using Gateway.Components.Routing.Services;
 
-namespace Gateway.Yarp.Maps;
+namespace Gateway.Components.Routing.Maps;
 
 public class MapFromRouteConfigToYarpClusterConfig : Profile
 {

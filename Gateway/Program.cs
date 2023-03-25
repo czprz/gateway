@@ -1,47 +1,31 @@
-using AutoMapper;
+using System.Collections.ObjectModel;
+using Gateway.Components.Auth;
+using Gateway.Components.Routing;
 using Gateway.Config;
-using Gateway.Config.Maps;
-using Gateway.Endpoints;
-using Gateway.Yarp;
-using Gateway.Yarp.Maps;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Yarp.ReverseProxy.Configuration;
+using RouteConfig = Yarp.ReverseProxy.Configuration.RouteConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var config = new MapperConfiguration(cfg =>
-{
-    cfg.AddProfile<MapFromDefinitionToRouteConfig>();
-    cfg.AddProfile<MapFromRouteConfigToYarpRouteConfig>();
-    cfg.AddProfile<MapFromRouteConfigToYarpClusterConfig>();
-});
+builder.Services.Configure<GatewayConfig>(
+    builder.Configuration.GetSection("GatewayConfig"));
 
-var mapper = config.CreateMapper();
-builder.Services.AddSingleton(mapper);
+builder.Services.AddReverseProxy()
+    .LoadFromMemory(new Collection<RouteConfig>(), new Collection<ClusterConfig>());
 
-builder.AddReverseProxy();
+builder.Services.AddSingleton<IConfig, Config>();
 
-builder.Services.AddTransient<IProxyManager, ProxyManager>();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = Environment.GetEnvironmentVariable("AUTHORITY__ADDRESS");
-        options.Audience = Environment.GetEnvironmentVariable("AUTHORITY__AUDIENCE");
-    });
-
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("customPolicy", policy =>
-        policy.RequireAuthenticatedUser());
-});
+builder.AddRoutingService();
+builder.AddAuthFlow();
 
 var app = builder.Build();
 
 app.MapReverseProxy();
 
-app.AddRoutingEndpoints();
+// Must be placed above UseAuthFlow
 app.UseRouting();
 
-app.UseAuthentication();
+app.UseRoutingService();
+app.UseAuthFlow();
 
 app.Run();

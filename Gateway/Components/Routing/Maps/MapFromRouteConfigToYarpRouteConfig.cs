@@ -1,8 +1,7 @@
 using AutoMapper;
-using Gateway.Config;
-using RouteConfig = Gateway.Config.RouteConfig;
+using Gateway.Components.Routing.Services;
 
-namespace Gateway.Yarp.Maps;
+namespace Gateway.Components.Routing.Maps;
 
 public class MapFromRouteConfigToYarpRouteConfig : Profile
 {
@@ -11,6 +10,7 @@ public class MapFromRouteConfigToYarpRouteConfig : Profile
         CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.RouteConfig>()
             .ForMember(x => x.RouteId, opt => opt.MapFrom(o => Guid.NewGuid()))
             .ForMember(x => x.ClusterId, opt => opt.MapFrom((_, _, _, context) => context.Items["ClusterId"]))
+            .ForMember(d => d.AuthorizationPolicy, opt => opt.MapFrom((_, _, _, context) => context.Items["AuthorizationPolicy"]))
             .ForMember(x => x.Match, opt => opt.MapFrom((s, _, _, context) =>
             {
                 return new global::Yarp.ReverseProxy.Configuration.RouteMatch

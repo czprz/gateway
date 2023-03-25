@@ -5,17 +5,17 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY . Yarp
+COPY . Gateway
 
-RUN dotnet restore "Yarp/Yarp.csproj"
+RUN dotnet restore "Gateway/Gateway.csproj"
 
-WORKDIR "/src/Yarp"
-RUN dotnet build "Yarp.csproj" -c Release -o /app/build
+WORKDIR "/src/Gateway"
+RUN dotnet build "Gateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Yarp.csproj" -c Release -o /app/publish
+RUN dotnet publish "Gateway.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Yarp.dll"]
+ENTRYPOINT ["dotnet", "Gateway.dll"]

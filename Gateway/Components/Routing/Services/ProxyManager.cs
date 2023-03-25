@@ -1,6 +1,4 @@
-using Gateway.Yarp;
-
-namespace Gateway.Config;
+namespace Gateway.Components.Routing.Services;
 
 public class ProxyManager : IProxyManager
 {

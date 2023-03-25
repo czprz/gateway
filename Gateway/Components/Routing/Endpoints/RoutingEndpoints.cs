@@ -1,9 +1,9 @@
 using AutoMapper;
-using Gateway.Config;
-using Gateway.Models;
+using Gateway.Components.Routing.Models;
+using Gateway.Components.Routing.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Gateway.Endpoints;
+namespace Gateway.Components.Routing.Endpoints;
 
 public static class RoutingEndpoints
 {
@@ -21,17 +21,18 @@ public static class RoutingEndpoints
         return routes.Count == 0 ? Results.NotFound() : Results.Ok(proxyManager.GetRoutes());
     }
 
-    private static async Task<IResult> AddRoute([FromBody] RouteDefinition routeDefinition, IProxyManager proxyManager, IMapper mapper)
+    private static async Task<IResult> AddRoute([FromBody] RouteDto routeDto, IProxyManager proxyManager, IMapper mapper)
     {
         try
         {
-            var route = mapper.Map<RouteDefinition, RouteConfig>(routeDefinition);
+            var route = mapper.Map<RouteDto, RouteConfig>(routeDto);
             proxyManager.AddRoute(route);
             
             return Results.Ok();
         }
         catch (Exception ex)
         {
+            // TODO: Better exception handling and logging
             return Results.BadRequest("Failed to add route");
         }
     }
@@ -46,6 +47,7 @@ public static class RoutingEndpoints
         }
         catch (Exception ex)
         {
+            // TODO: Better exception handling and logging
             return Results.NotFound();
         }
     }

@@ -12,9 +12,17 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5053",
+      "applicationUrl": "http://localhost",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "GatewayConfig__URL": "http://localhost/test",
+        "GatewayConfig__SessionTimeoutInMin": "30",
+        "GatewayConfig__TokenExchangeStrategy": "Cookie",
+        "GatewayConfig__Authority": "http://localhost:8080/realms/master",
+        "GatewayConfig__ClientId": "example",
+        "GatewayConfig__ClientSecret": "secret",
+        "GatewayConfig__Scopes": "openid profile email",
+        "GatewayConfig__QueryUserInfoEndpoint": "true"
       }
     },
     "https": {

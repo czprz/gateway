@@ -1,4 +1,4 @@
-namespace Gateway.Config;
+namespace Gateway.Components.Routing.Services;
 
 public interface IProxyManager
 {
