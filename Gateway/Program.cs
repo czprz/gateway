@@ -20,7 +20,7 @@ builder.AddAuthFlow();
 
 var app = builder.Build();
 
-app.MapReverseProxy();
+app.MapReverseProxy(p => p.AddAuthFlowTokenPipe());
 
 // Must be placed above UseAuthFlow
 app.UseRouting();

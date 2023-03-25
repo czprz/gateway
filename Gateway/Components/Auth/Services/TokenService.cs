@@ -29,27 +29,22 @@ public class TokenService : ITokenService
         }
 
         var token = ctx.Session.GetString(SessionKeys.ACCESS_TOKEN);
+        // TODO: Logout if token is missing (Will be missing if service has been restarted)
         var currentUrl = ctx.Request.Path.ToString().ToLower();
 
-        var apiConfig = _config.Value.ApiConfigs.FirstOrDefault(x => currentUrl.StartsWith(x.ApiPath));
-
-        if (!string.IsNullOrEmpty(token) && apiConfig != null)
+        if (!string.IsNullOrEmpty(token)) // TODO: Filter APIs so only those who should have a token get one
         {
-            var apiToken = await GetApiToken(ctx, token, apiConfig);
+            var apiToken = await GetApiToken(ctx, token);
 
-            _logger.LogDebug("Adding token for request: {currentUrl} {apiToken}", currentUrl, apiToken);
+            _logger.LogDebug("Adding token to request: {currentUrl}", currentUrl);
 
             ctx.Request.Headers.Add("Authorization", "Bearer " + apiToken);
         }
     }
 
-    private async Task<string> GetApiToken(HttpContext ctx, string token, ApiConfig? apiConfig)
+    private async Task<string> GetApiToken(HttpContext ctx, string token)
     {
-        string? apiToken = null;
-        if (!string.IsNullOrEmpty(apiConfig?.ApiScopes) || !string.IsNullOrEmpty(apiConfig?.ApiAudience))
-        {
-            apiToken = await _apiTokenService.LookupApiToken(ctx, apiConfig, token);
-        }
+        var apiToken = await _apiTokenService.LookupApiToken(ctx, token);
 
         return !string.IsNullOrEmpty(apiToken) ? apiToken : token;
     }

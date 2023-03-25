@@ -16,14 +16,21 @@ public static class AuthFlowExtension
     {
         var config = builder.Services.BuildServiceProvider().GetRequiredService<IConfig>();
 
-        // builder.Services.AddHttpClient("discovery-endpoint", client =>
-        // {
-        //     client.BaseAddress = new(config.Authority);
-        // });
+        builder.Services.AddHttpClient("discovery-endpoint", client =>
+        {
+            client.BaseAddress = new(config.Authority);
+        });
+        
+        builder.Services.AddHttpClient("token_endpoint", client =>
+        {
+            client.BaseAddress = new(config.Authority);
+        });
 
         builder.Services.AddTokenExchangeService(config);
-
-        // builder.Services.AddTransient<IDiscoveryService, DiscoveryService>();
+        
+        // Exchanges
+        builder.Services.AddTransient<ITokenExchangeService, NoTokenExchangeService>();
+        
         // Handlers
         builder.Services.AddTransient<ITokenHandler, TokenHandler>();
         builder.Services.AddTransient<ILogoutHandler, LogoutHandler>();
