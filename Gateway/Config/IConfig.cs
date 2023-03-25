@@ -4,7 +4,6 @@ public interface IConfig
 {
     public bool AuthFlowEnabled { get; }
     public string AuthFlowKey { get; }
-    public string Url { get; }
     public int SessionTimeoutInMin { get; }
     public string TokenExchangeStrategy { get; }
     public string Authority { get; }
@@ -12,5 +11,4 @@ public interface IConfig
     public string ClientSecret { get; }
     public string Scopes { get; }
     public bool QueryUserInfoEndpoint { get; }
-    public ApiConfig[] ApiConfigs { get; }
 }

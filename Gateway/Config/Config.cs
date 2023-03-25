@@ -15,7 +15,7 @@ public class Config : IConfig
     public string AuthFlowKey => "authPolicy";
     public string Url => _options.Value.Url;
     public int SessionTimeoutInMin => _options.Value.SessionTimeoutInMin;
-    public string TokenExchangeStrategy => _options.Value.TokenExchangeStrategy;
+    public string TokenExchangeStrategy => _options.Value.TokenExchangeStrategy ?? "";
     public string Authority => _options.Value.Authority;
     public string ClientId => _options.Value.ClientId;
     public string ClientSecret => _options.Value.ClientSecret;

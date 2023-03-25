@@ -27,10 +27,7 @@ public static class AuthFlowExtension
         });
 
         builder.Services.AddTokenExchangeService(config);
-        
-        // Exchanges
-        builder.Services.AddTransient<ITokenExchangeService, NoTokenExchangeService>();
-        
+
         // Handlers
         builder.Services.AddTransient<ITokenHandler, TokenHandler>();
         builder.Services.AddTransient<ILogoutHandler, LogoutHandler>();
@@ -115,6 +112,11 @@ public static class AuthFlowExtension
             case "none":
             {
                 services.AddSingleton<ITokenExchangeService, NoTokenExchangeService>();
+                break;
+            }
+            default:
+            {
+                services.AddTransient<ITokenExchangeService, TokenExchangeService>();
                 break;
             }
         }

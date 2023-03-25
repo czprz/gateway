@@ -3,10 +3,12 @@ namespace Gateway.Components.Routing.Services;
 public class ProxyManager : IProxyManager
 {
     private readonly IYarpFacade _yarpFacade;
+    private readonly IRoutingRepository _routingRepository;
 
-    public ProxyManager(IYarpFacade yarpFacade)
+    public ProxyManager(IYarpFacade yarpFacade, IRoutingRepository routingRepository)
     {
         _yarpFacade = yarpFacade;
+        _routingRepository = routingRepository;
     }
 
     public IReadOnlyList<RouteConfig> GetRoutes()
@@ -17,7 +19,7 @@ public class ProxyManager : IProxyManager
     public void AddRoute(RouteConfig route)
     {
         _yarpFacade.Update(route);
-        // TODO: Save DB
+        _routingRepository.Save(route);
     }
 
     public void RemoveRoute(string route)

@@ -1,6 +1,5 @@
 using Gateway.Components.Auth.Util;
-using Gateway.Config;
-using Microsoft.Extensions.Options;
+using Gateway.Components.Routing.Services;
 
 namespace Gateway.Components.Auth.Services;
 
@@ -8,33 +7,35 @@ public class TokenService : ITokenService
 {
     private readonly IApiTokenService _apiTokenService;
     private readonly ITokenRefreshService _tokenRefreshService;
-    private readonly IOptions<GatewayConfig> _config;
+    private readonly IRoutingRepository _routingRepository;
     private readonly ILogger<TokenService> _logger;
 
     public TokenService(IApiTokenService apiTokenService, ITokenRefreshService tokenRefreshService,
-        IOptions<GatewayConfig> config, ILogger<TokenService> logger)
+        IRoutingRepository routingRepository, ILogger<TokenService> logger)
     {
         _apiTokenService = apiTokenService;
         _tokenRefreshService = tokenRefreshService;
-        _config = config;
+        _routingRepository = routingRepository;
         _logger = logger;
     }
 
     public async Task AddToken(HttpContext ctx)
     {
+        var currentUrl = ctx.Request.Path.ToString().ToLower();
+        var routeConfig = _routingRepository.Get(currentUrl);
+        
         if (IsExpired(ctx) && HasRefreshToken(ctx))
         {
             _apiTokenService.InvalidateApiTokens(ctx);
-            await Refresh(ctx);
+            await Refresh(ctx, routeConfig);
         }
 
         var token = ctx.Session.GetString(SessionKeys.ACCESS_TOKEN);
         // TODO: Logout if token is missing (Will be missing if service has been restarted)
-        var currentUrl = ctx.Request.Path.ToString().ToLower();
 
         if (!string.IsNullOrEmpty(token)) // TODO: Filter APIs so only those who should have a token get one
         {
-            var apiToken = await GetApiToken(ctx, token);
+            var apiToken = await GetApiToken(ctx, token, routeConfig);
 
             _logger.LogDebug("Adding token to request: {currentUrl}", currentUrl);
 
@@ -42,30 +43,29 @@ public class TokenService : ITokenService
         }
     }
 
-    private async Task<string> GetApiToken(HttpContext ctx, string token)
+    private async Task<string> GetApiToken(HttpContext ctx, string token, RouteConfig? routeConfig)
     {
-        var apiToken = await _apiTokenService.LookupApiToken(ctx, token);
+        var apiToken = await _apiTokenService.LookupApiToken(ctx, token, routeConfig);
 
         return !string.IsNullOrEmpty(apiToken) ? apiToken : token;
     }
 
-    private async Task Refresh(HttpContext ctx)
+    private async Task Refresh(HttpContext ctx, RouteConfig? routeConfig)
     {
         var refreshToken = GetRefreshToken(ctx);
 
-        var resp = await _tokenRefreshService.RefreshAsync(refreshToken);
-
-        if (resp == null)
+        var refreshResponse = await _tokenRefreshService.RefreshAsync(refreshToken, routeConfig);
+        if (refreshResponse == null)
         {
             // Next call to API will fail with 401 and client can take action
             return;
         }
 
-        var expiresAt = new DateTimeOffset(DateTime.Now).AddSeconds(Convert.ToInt32(resp.expires));
+        var expiresAt = new DateTimeOffset(DateTime.Now).AddSeconds(Convert.ToInt32(refreshResponse.expires));
 
-        ctx.Session.SetString(SessionKeys.ACCESS_TOKEN, resp.access_token);
-        ctx.Session.SetString(SessionKeys.ID_TOKEN, resp.id_token);
-        ctx.Session.SetString(SessionKeys.REFRESH_TOKEN, resp.refresh_token);
+        ctx.Session.SetString(SessionKeys.ACCESS_TOKEN, refreshResponse.access_token);
+        ctx.Session.SetString(SessionKeys.ID_TOKEN, refreshResponse.id_token);
+        ctx.Session.SetString(SessionKeys.REFRESH_TOKEN, refreshResponse.refresh_token);
         ctx.Session.SetString(SessionKeys.EXPIRES_AT, "" + expiresAt.ToUnixTimeSeconds());
     }
 

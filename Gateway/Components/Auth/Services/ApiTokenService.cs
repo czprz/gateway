@@ -1,6 +1,6 @@
 using Gateway.Components.Auth.Exchanges;
 using Gateway.Components.Auth.Util;
-using Gateway.Config;
+using Gateway.Components.Routing.Services;
 
 namespace Gateway.Components.Auth.Services;
 
@@ -20,39 +20,34 @@ public class ApiTokenService : IApiTokenService
         ctx.Session.Remove(SessionKeys.API_ACCESS_TOKEN);
     }
 
-    public async Task<string> LookupApiToken(HttpContext ctx, string token)
+    public async Task<string> LookupApiToken(HttpContext ctx, string token, RouteConfig? routeConfig)
     {
-        var apiToken = GetCachedApiToken(ctx);
-
+        var apiToken = ReadApiToken(ctx);
         if (apiToken != null)
         {
+            _logger.LogDebug("Using cached API token.");
             // TODO: Perform individual token refresh
             return apiToken.AccessToken;
         }
 
-        var response = await _tokenExchangeService.ExchangeTokenAsync(token);
-        SetCachedApiToken(ctx, response);
-
-        return response.AccessToken;
-    }
-
-    private void SetCachedApiToken(HttpContext ctx, TokenExchangeResponse response)
-    {
+        var response = await _tokenExchangeService.ExchangeTokenAsync(token, routeConfig);
         SaveApiToken(ctx, response);
+
+        return response?.AccessToken ?? "";
     }
 
-    private TokenExchangeResponse? GetCachedApiToken(HttpContext ctx)
+    private void SaveApiToken(HttpContext ctx, TokenExchangeResponse? response)
     {
-        var apiToken = ReadApiToken(ctx);
-        return apiToken ?? null;
-    }
-
-    private static void SaveApiToken(HttpContext ctx, TokenExchangeResponse token)
-    {
-        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".AccessToken", token.AccessToken);
-        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".RefreshToken", token.RefreshToken);
-        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".TokenType", token.TokenType ?? "");
-        ctx.Session.SetInt32(SessionKeys.API_ACCESS_TOKEN + ".ExpiresIn", token.ExpiresIn);
+        if (response == null)
+        {
+            _logger.LogDebug("No API token was returned from the token exchange service.");
+            return;
+        }
+        
+        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".AccessToken", response.AccessToken);
+        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".RefreshToken", response.RefreshToken);
+        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".TokenType", response.TokenType ?? "");
+        ctx.Session.SetInt32(SessionKeys.API_ACCESS_TOKEN + ".ExpiresIn", response.ExpiresIn);
     }
 
     private static TokenExchangeResponse? ReadApiToken(HttpContext ctx)

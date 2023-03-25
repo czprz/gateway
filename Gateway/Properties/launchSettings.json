@@ -17,7 +17,6 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "GatewayConfig__URL": "http://localhost/test",
         "GatewayConfig__SessionTimeoutInMin": "30",
-        "GatewayConfig__TokenExchangeStrategy": "Cookie",
         "GatewayConfig__Authority": "http://localhost:8080/realms/master",
         "GatewayConfig__ClientId": "example",
         "GatewayConfig__ClientSecret": "secret",

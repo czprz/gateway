@@ -1,8 +1,10 @@
+using Gateway.Components.Routing.Services;
+
 namespace Gateway.Components.Auth.Exchanges;
 
 public class NoTokenExchangeService : ITokenExchangeService
 {
-    public Task<TokenExchangeResponse> ExchangeTokenAsync(string token)
+    public Task<TokenExchangeResponse?> ExchangeTokenAsync(string token, RouteConfig? routeConfig)
     {
         var result = new TokenExchangeResponse
         {
@@ -11,6 +13,6 @@ public class NoTokenExchangeService : ITokenExchangeService
             RefreshToken = ""
         };
         
-        return Task.FromResult(result);
+        return Task.FromResult(result)!;
     }
 }

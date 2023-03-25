@@ -9,6 +9,10 @@ public class RouteDto
     public IReadOnlyList<HeaderDto>? Headers { get; init; }
     
     public bool? AuthenticationRequired { get; init; }
-    
+    public string? ClientId { get; init; }
+    public string? ClientSecret { get; init; }
+    public string? Audience { get; init; }
+    public string? Scopes { get; init; }
+
     public IReadOnlyList<ProxyDto> Proxy { get; init; }
 }
