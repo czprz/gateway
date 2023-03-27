@@ -6,4 +6,6 @@ public class DiscoveryDocument
 {
     [JsonPropertyName("token_endpoint")] 
     public string TokenEndpoint { get; set; } = "";
+    [JsonPropertyName("userinfo_endpoint")]
+    public string UserInfoEndpoint { get; set; } = "";
 }

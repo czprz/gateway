@@ -29,11 +29,11 @@ public class AuthorityFacade : IAuthorityFacade
         }
 
         _discoveryDocument.TokenEndpoint = new Uri(doc.TokenEndpoint).LocalPath;
+        _discoveryDocument.UserInfoEndpoint = new Uri(doc.UserInfoEndpoint).LocalPath;
     }
 
     public async Task<TokenResponse?> GetToken(Dictionary<string, string> payload)
     {
-        // TODO: Call discovery document endpoint to get token endpoint with caching to avoid too many requests
         var client = _httpClientFactory.CreateClient("authority_endpoint");
         
         var encodedPayload = new FormUrlEncodedContent(payload);
@@ -45,5 +45,23 @@ public class AuthorityFacade : IAuthorityFacade
         }
         
         return await response.Content.ReadFromJsonAsync<TokenResponse>();
+    }
+
+    public async Task<UserInfoResponse?> GetUserInfo(string accessToken)
+    {
+        var client = _httpClientFactory.CreateClient("authority_endpoint");
+        
+        var payload = new Dictionary<string, string>
+        {
+            ["access_token"] = accessToken
+        };
+        
+        var response = await client.PostAsync(_discoveryDocument.UserInfoEndpoint, new FormUrlEncodedContent(payload));
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
+        
+        return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
     }
 }

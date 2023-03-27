@@ -51,22 +51,15 @@ public static class AuthEndpoints
         return Results.SignOut(authProps, authSchemes);
     }
 
-    private static async Task<IResult> UseUserInfoEndpoint(ClaimsPrincipal user, IMapper mapper, IHttpClientFactory clientFactory, HttpContext ctx)
+    private static async Task<IResult> UseUserInfoEndpoint(IAuthorityFacade authorityFacade, HttpContext ctx)
     {
-        // TODO: Get userinfo from API http://localhost:8080/realms/master/
-        var client = clientFactory.CreateClient("authority_endpoint");
-        
-        var payload = new Dictionary<string, string>
+        var token = ctx.Session.GetString(SessionKeys.ACCESS_TOKEN);
+        if (token == null)
         {
-            ["access_token"] = ctx.Session.GetString(SessionKeys.ACCESS_TOKEN)
-        };
+            return Results.Unauthorized();
+        }
         
-        var response = await client.PostAsync("protocol/openid-connect/userinfo", new FormUrlEncodedContent(payload));
-        var content = await response.Content.ReadAsStringAsync();
-        var claims = user.Claims;
-        // var userInfo = mapper.Map<UserInfo>(claims);
-        var userInfo = "";
-
+        var userInfo = authorityFacade.GetUserInfo(token); 
         return Results.Ok(userInfo);
     }
 }
