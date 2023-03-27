@@ -1,35 +1,19 @@
-using Gateway.Config;
+using Gateway.Components.Auth.Util;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace Gateway.Components.Auth.Handlers;
 
 public class LogoutHandler : ILogoutHandler
 {
-    private readonly IConfig _config;
+    private readonly IAuthorityFacade _authorityFacade;
 
-    public LogoutHandler(IConfig config)
+    public LogoutHandler(IAuthorityFacade authorityFacade)
     {
-        _config = config;
+        _authorityFacade = authorityFacade;
     }
     
     public void Logout(RedirectContext context)
     {
-        const string logoutUrl = "http://localhost:8080/realms/master/protocol/openid-connect/logout";
-        // TODO: Get logout url from discovery document
-        if (string.IsNullOrEmpty(logoutUrl))
-        {
-            return;
-        }
-        
-        var req = context.Request;
-        var gatewayUrl = Uri.EscapeDataString(req.Scheme + "://" + req.Host + req.PathBase);
-
-        var logoutUri = logoutUrl
-            .Replace("{authority}", _config.Authority)
-            .Replace("{clientId}", _config.ClientId)
-            .Replace("{gatewayUrl}", gatewayUrl);
-
-        context.Response.Redirect(logoutUri);
-        context.HandleResponse();
+        _authorityFacade.Logout(context);
     }
 }

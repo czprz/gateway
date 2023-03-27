@@ -1,4 +1,5 @@
 using Gateway.Config;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace Gateway.Components.Auth.Util;
 
@@ -28,8 +29,10 @@ public class AuthorityFacade : IAuthorityFacade
             throw new Exception("Unable to load discovery document.");
         }
 
+        // TODO: Handle this more cleanly
         _discoveryDocument.TokenEndpoint = new Uri(doc.TokenEndpoint).LocalPath;
         _discoveryDocument.UserInfoEndpoint = new Uri(doc.UserInfoEndpoint).LocalPath;
+        _discoveryDocument.EndSessionEndpoint = doc.EndSessionEndpoint;
     }
 
     public async Task<TokenResponse?> GetToken(Dictionary<string, string> payload)
@@ -45,6 +48,12 @@ public class AuthorityFacade : IAuthorityFacade
         }
         
         return await response.Content.ReadFromJsonAsync<TokenResponse>();
+    }
+
+    public void Logout(RedirectContext context)
+    {
+        context.Response.Redirect(_discoveryDocument.EndSessionEndpoint);
+        context.HandleResponse();
     }
 
     public async Task<UserInfoResponse?> GetUserInfo(string accessToken)
