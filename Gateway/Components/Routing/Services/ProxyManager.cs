@@ -13,17 +13,24 @@ public class ProxyManager : IProxyManager
 
     public IReadOnlyList<RouteConfig> GetRoutes()
     {
-        return _yarpFacade.Read();
+        return _routingRepository.Get();
     }
 
     public void AddRoute(RouteConfig route)
     {
-        _yarpFacade.Update(route);
         _routingRepository.Save(route);
+        
+        var routes = _routingRepository.Get();
+        
+        _yarpFacade.Update(routes);
     }
 
     public void RemoveRoute(string route)
     {
-        // TODO: Remove from Yarp and DB
+        _routingRepository.Remove(route);
+        
+        var routes = _routingRepository.Get();
+        
+        _yarpFacade.Update(routes);
     }
 }

@@ -17,13 +17,22 @@ public class YarpFacade : IYarpFacade
         _config = config;
     }
 
-    public void Update(RouteConfig route)
+    public void Update(IEnumerable<RouteConfig> routes)
     {
-        var clusterConfig = _mapper.Map<RouteConfig, ClusterConfig>(route);
-        var routeConfig =
-            _mapper.Map<RouteConfig, Yarp.ReverseProxy.Configuration.RouteConfig>(route, opt => ConfigureValuesForMapping(opt, clusterConfig, route));
+        var routeConfigs = new List<Yarp.ReverseProxy.Configuration.RouteConfig>();
+        var clusterConfigs = new List<ClusterConfig>();
+        
+        foreach (var route in routes)
+        {
+            var clusterConfig = _mapper.Map<RouteConfig, ClusterConfig>(route);
+            var routeConfig = _mapper.Map<RouteConfig, Yarp.ReverseProxy.Configuration.RouteConfig>(route,
+                opt => ConfigureValuesForMapping(opt, clusterConfig, route));
+            
+            routeConfigs.Add(routeConfig);
+            clusterConfigs.Add(clusterConfig);
+        }
 
-        _configProvider.Update(new[] { routeConfig }, new[] { clusterConfig });
+        _configProvider.Update(routeConfigs, clusterConfigs);
     }
 
     public IReadOnlyList<RouteConfig> Read()
