@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using AutoMapper;
 using Gateway.Components.Auth.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
