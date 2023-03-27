@@ -13,14 +13,14 @@ public class RouteConfig
     public string? ClientSecret { get; init; }
     public string? Audience { get; init; }
     public string? Scopes { get; init; }
-    
-    public IReadOnlyList<Proxy> Proxy { get; init; }
+
+    public IReadOnlyList<Proxy> Proxies { get; init; }
 }
 
 public class Proxy
 {
-    public string Address { get; init; }
-    public string HealthProbeAddress { get; init; }
+    public string Address { get; set; } = "";
+    public string? HealthProbeAddress { get; set; }
 }
 
 public class QueryParameterMatch

@@ -21,11 +21,11 @@ public static class RoutingEndpoints
         return routes.Count == 0 ? Results.NotFound() : Results.Ok(proxyManager.GetRoutes());
     }
 
-    private static async Task<IResult> AddRoute([FromBody] RouteDto routeDto, IProxyManager proxyManager, IMapper mapper)
+    private static async Task<IResult> AddRoute([FromBody] RouteConfigDto routeConfigDto, IProxyManager proxyManager, IMapper mapper)
     {
         try
         {
-            var route = mapper.Map<RouteDto, RouteConfig>(routeDto);
+            var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
             proxyManager.AddRoute(route);
             
             return Results.Ok();

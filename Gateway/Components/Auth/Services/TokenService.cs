@@ -61,11 +61,11 @@ public class TokenService : ITokenService
             return;
         }
 
-        var expiresAt = new DateTimeOffset(DateTime.Now).AddSeconds(Convert.ToInt32(refreshResponse.expires));
+        var expiresAt = new DateTimeOffset(DateTime.Now).AddSeconds(Convert.ToInt32(refreshResponse.Expires));
 
-        ctx.Session.SetString(SessionKeys.ACCESS_TOKEN, refreshResponse.access_token);
-        ctx.Session.SetString(SessionKeys.ID_TOKEN, refreshResponse.id_token);
-        ctx.Session.SetString(SessionKeys.REFRESH_TOKEN, refreshResponse.refresh_token);
+        ctx.Session.SetString(SessionKeys.ACCESS_TOKEN, refreshResponse.AccessToken);
+        ctx.Session.SetString(SessionKeys.ID_TOKEN, refreshResponse.IdToken);
+        ctx.Session.SetString(SessionKeys.REFRESH_TOKEN, refreshResponse.RefreshToken);
         ctx.Session.SetString(SessionKeys.EXPIRES_AT, "" + expiresAt.ToUnixTimeSeconds());
     }
 

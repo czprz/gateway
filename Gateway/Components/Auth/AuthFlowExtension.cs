@@ -2,6 +2,7 @@ using Gateway.Components.Auth.Endpoints;
 using Gateway.Components.Auth.Exchanges;
 using Gateway.Components.Auth.Handlers;
 using Gateway.Components.Auth.Services;
+using Gateway.Components.Auth.Util;
 using Gateway.Config;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -12,26 +13,34 @@ namespace Gateway.Components.Auth;
 
 public static class AuthFlowExtension
 {
-    public static async void AddAuthFlow(this WebApplicationBuilder builder)
+    public static void AddAuthFlow(this WebApplicationBuilder builder)
     {
         var config = builder.Services.BuildServiceProvider().GetRequiredService<IConfig>();
 
-        builder.Services.AddHttpClient("discovery-endpoint", client =>
-        {
-            client.BaseAddress = new(config.Authority);
-        });
-        
-        builder.Services.AddHttpClient("token_endpoint", client =>
-        {
-            client.BaseAddress = new(config.Authority);
-        });
+        builder.Services.AddHttpClient("authority_endpoint", client =>
+            {
+                // TODO: Add validation on authority url. Must start with http or https
+                var authorityUrl = config.Authority;
+                var lastChar = config.Authority[^1];
+                if (lastChar != '/')
+                {
+                    authorityUrl += '/';
+                }
+                // TODO: Improve this, it's a bit hacky
+                
+                client.BaseAddress = new Uri(authorityUrl, UriKind.RelativeOrAbsolute);
+            });
 
+        // Discovery
+        builder.Services.AddSingleton<IAuthorityFacade, AuthorityFacade>();
+
+        // Token Exchange
         builder.Services.AddTokenExchangeService(config);
 
         // Handlers
         builder.Services.AddTransient<ITokenHandler, TokenHandler>();
         builder.Services.AddTransient<ILogoutHandler, LogoutHandler>();
-        
+
         // Token Services
         builder.Services.AddTransient<ITokenRefreshService, TokenRefreshService>();
         builder.Services.AddTransient<IApiTokenService, ApiTokenService>();

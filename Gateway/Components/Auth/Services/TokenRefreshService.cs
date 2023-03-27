@@ -7,15 +7,15 @@ namespace Gateway.Components.Auth.Services;
 public class TokenRefreshService : ITokenRefreshService
 {
     private readonly IConfig _config;
-    private readonly IHttpClientFactory _clientFactory;
+    private readonly IAuthorityFacade _authorityFacade;
 
-    public TokenRefreshService(IConfig config, IHttpClientFactory clientFactory)
+    public TokenRefreshService(IConfig config, IAuthorityFacade authorityFacade)
     {
         _config = config;
-        _clientFactory = clientFactory;
+        _authorityFacade = authorityFacade;
     }
-    
-    public async Task<RefreshResponse?> RefreshAsync(string refreshToken, RouteConfig? routeConfig)
+
+    public async Task<TokenResponse?> RefreshAsync(string refreshToken, RouteConfig? routeConfig)
     {
         var payload = new Dictionary<string, string>
         {
@@ -24,15 +24,8 @@ public class TokenRefreshService : ITokenRefreshService
             { "client_id", routeConfig?.ClientId ?? _config.ClientId },
             { "client_secret", routeConfig?.ClientSecret ?? _config.ClientSecret }
         };
-
-        var httpClient = _clientFactory.CreateClient("token_endpoint");
-        // TODO: Replace URL with endpoint from discovery document
-        var response = await httpClient.PostAsync("master/protocol/openid-connect/token", new FormUrlEncodedContent(payload));
-        if (!response.IsSuccessStatusCode) {
-            return null;
-        }
-
-        var result = await response.Content.ReadFromJsonAsync<RefreshResponse>();
+        
+        var result = await _authorityFacade.GetToken(payload);
 
         return result;
     }

@@ -3,13 +3,13 @@ using Gateway.Components.Routing.Services;
 
 namespace Gateway.Components.Routing.Maps;
 
-public class MapFromRouteConfigToYarpClusterConfig : Profile
+public class YarpClusterConfigMaps : Profile
 {
-    public MapFromRouteConfigToYarpClusterConfig()
+    public YarpClusterConfigMaps()
     {
         CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.ClusterConfig>()
             .ForMember(d => d.ClusterId, opt => opt.MapFrom(o => Guid.NewGuid()))
-            .ForMember(d => d.Destinations, opt => opt.MapFrom(s => s.Proxy.Select(x =>
+            .ForMember(d => d.Destinations, opt => opt.MapFrom(s => s.Proxies.Select(x =>
                 new global::Yarp.ReverseProxy.Configuration.DestinationConfig
                 {
                     Address = x.Address,

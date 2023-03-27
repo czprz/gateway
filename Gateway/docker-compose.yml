@@ -15,4 +15,4 @@ services:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
     command:
-      - start-dev
+      - start-dev --features=token-exchange

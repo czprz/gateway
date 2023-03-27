@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using Gateway.Components.Auth.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -50,10 +51,21 @@ public static class AuthEndpoints
         return Results.SignOut(authProps, authSchemes);
     }
 
-    private static IResult UseUserInfoEndpoint(ClaimsPrincipal user, IMapper mapper)
+    private static async Task<IResult> UseUserInfoEndpoint(ClaimsPrincipal user, IMapper mapper, IHttpClientFactory clientFactory, HttpContext ctx)
     {
+        // TODO: Get userinfo from API http://localhost:8080/realms/master/
+        var client = clientFactory.CreateClient("authority_endpoint");
+        
+        var payload = new Dictionary<string, string>
+        {
+            ["access_token"] = ctx.Session.GetString(SessionKeys.ACCESS_TOKEN)
+        };
+        
+        var response = await client.PostAsync("protocol/openid-connect/userinfo", new FormUrlEncodedContent(payload));
+        var content = await response.Content.ReadAsStringAsync();
         var claims = user.Claims;
-        var userInfo = mapper.Map<UserInfo>(claims);
+        // var userInfo = mapper.Map<UserInfo>(claims);
+        var userInfo = "";
 
         return Results.Ok(userInfo);
     }

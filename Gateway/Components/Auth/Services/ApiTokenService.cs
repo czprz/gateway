@@ -33,7 +33,7 @@ public class ApiTokenService : IApiTokenService
         var response = await _tokenExchangeService.ExchangeTokenAsync(token, routeConfig);
         SaveApiToken(ctx, response);
 
-        return response?.AccessToken ?? "";
+        return response.AccessToken;
     }
 
     private void SaveApiToken(HttpContext ctx, TokenExchangeResponse? response)
@@ -46,7 +46,7 @@ public class ApiTokenService : IApiTokenService
         
         ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".AccessToken", response.AccessToken);
         ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".RefreshToken", response.RefreshToken);
-        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".TokenType", response.TokenType ?? "");
+        ctx.Session.SetString(SessionKeys.API_ACCESS_TOKEN + ".TokenType", response.TokenType);
         ctx.Session.SetInt32(SessionKeys.API_ACCESS_TOKEN + ".ExpiresIn", response.ExpiresIn);
     }
 

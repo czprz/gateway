@@ -4,11 +4,11 @@ using Gateway.Components.Routing.Services;
 
 namespace Gateway.Components.Routing.Maps;
 
-public class MapFromDefinitionToRouteConfig : Profile
+public class RouteConfigMaps : Profile
 {
-    public MapFromDefinitionToRouteConfig()
+    public RouteConfigMaps()
     {
-        CreateMap<RouteDto, RouteConfig>()
+        CreateMap<RouteConfigDto, RouteConfig>()
             .ReverseMap();
         CreateMap<QueryParameterDto, QueryParameterMatch>()
             .ReverseMap();

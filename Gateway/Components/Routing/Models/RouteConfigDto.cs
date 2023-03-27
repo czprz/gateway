@@ -1,6 +1,6 @@
 namespace Gateway.Components.Routing.Models;
 
-public class RouteDto
+public class RouteConfigDto
 {
     public IReadOnlyList<string>? Methods { get; init; }
     public IReadOnlyList<string>? Hosts { get; init; }
@@ -14,5 +14,5 @@ public class RouteDto
     public string? Audience { get; init; }
     public string? Scopes { get; init; }
 
-    public IReadOnlyList<ProxyDto> Proxy { get; init; }
+    public IReadOnlyList<ProxyDto> Proxies { get; init; }
 }

@@ -5,5 +5,5 @@ namespace Gateway.Components.Auth.Services;
 
 public interface ITokenRefreshService
 {
-    Task<RefreshResponse?> RefreshAsync(string refreshToken, RouteConfig? routeConfig);
+    Task<TokenResponse?> RefreshAsync(string refreshToken, RouteConfig? routeConfig);
 }

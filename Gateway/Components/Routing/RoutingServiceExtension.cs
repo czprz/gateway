@@ -11,14 +11,15 @@ public static class RoutingServiceExtension
     {
         var config = new MapperConfiguration(cfg =>
         {
-            cfg.AddProfile<MapFromDefinitionToRouteConfig>();
-            cfg.AddProfile<MapFromRouteConfigToYarpRouteConfig>();
-            cfg.AddProfile<MapFromRouteConfigToYarpClusterConfig>();
+            cfg.AddProfile<RouteConfigMaps>();
+            cfg.AddProfile<YarpRouteConfigMaps>();
+            cfg.AddProfile<YarpClusterConfigMaps>();
         });
 
         var mapper = config.CreateMapper();
         builder.Services.AddSingleton(mapper);
 
+        builder.Services.AddSingleton<IRoutingRepository, RoutingRepository>();
         builder.Services.AddTransient<IProxyManager, ProxyManager>();
         builder.Services.AddTransient<IYarpFacade, YarpFacade>();
     }

@@ -3,9 +3,9 @@ using Gateway.Components.Routing.Services;
 
 namespace Gateway.Components.Routing.Maps;
 
-public class MapFromRouteConfigToYarpRouteConfig : Profile
+public class YarpRouteConfigMaps : Profile
 {
-    public MapFromRouteConfigToYarpRouteConfig()
+    public YarpRouteConfigMaps()
     {
         CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.RouteConfig>()
             .ForMember(x => x.RouteId, opt => opt.MapFrom(o => Guid.NewGuid()))

@@ -1,5 +1,9 @@
+using System.Text.Json.Serialization;
+
 namespace Gateway.Components.Auth.Util;
 
-public class DiscoveryDocument {
-    public string token_endpoint { get; set;} = "";
+public class DiscoveryDocument
+{
+    [JsonPropertyName("token_endpoint")] 
+    public string TokenEndpoint { get; set; } = "";
 }

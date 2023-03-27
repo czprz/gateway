@@ -47,8 +47,7 @@ public static class XsrfExtension
 
     private static void UseXsrfCookieChecks(this WebApplication app)
     {
-        var options = app.Services.GetRequiredService<IOptions<GatewayConfig>>();
-        var apiConfigs = options.Value.ApiConfigs;
+        // TODO: Use RoutingRepository
 
         app.Use(async (ctx, next) =>
         {
@@ -59,8 +58,7 @@ public static class XsrfExtension
             }
 
             var currentUrl = ctx.Request.Path.ToString().ToLower();
-            if (apiConfigs.Any(c => currentUrl.StartsWith(c.ApiPath))
-                && !await antiforgery.IsRequestValidAsync(ctx))
+            if (!await antiforgery.IsRequestValidAsync(ctx))
             {
                 ctx.Response.StatusCode = 400;
                 await ctx.Response.WriteAsJsonAsync(new
