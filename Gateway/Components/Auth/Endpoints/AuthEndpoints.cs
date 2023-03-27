@@ -57,7 +57,7 @@ public static class AuthEndpoints
             return Results.Unauthorized();
         }
         
-        var userInfo = authorityFacade.GetUserInfo(token); 
+        var userInfo = await authorityFacade.GetUserInfo(token); 
         return Results.Ok(userInfo);
     }
 }
