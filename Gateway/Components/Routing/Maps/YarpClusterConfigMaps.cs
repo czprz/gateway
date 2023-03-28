@@ -10,6 +10,7 @@ public class YarpClusterConfigMaps : Profile
         CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.ClusterConfig>()
             .ForMember(d => d.ClusterId, opt => opt.MapFrom(o => Guid.NewGuid()))
             .ForMember(d => d.Destinations, opt => opt.MapFrom(s => s.Proxies.Select(x =>
+                // TODO: Add StringComparer.OrdinalIgnoreCase to the dictionary
                 new global::Yarp.ReverseProxy.Configuration.DestinationConfig
                 {
                     Address = x.Address,

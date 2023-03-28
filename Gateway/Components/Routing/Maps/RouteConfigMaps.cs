@@ -14,7 +14,7 @@ public class RouteConfigMaps : Profile
             .ReverseMap();
         CreateMap<HeaderDto, HeaderMatch>()
             .ReverseMap();
-        CreateMap<ProxyDto, Proxy>()
+        CreateMap<UpstreamDto, Proxy>()
             .ReverseMap();
     }
 }
