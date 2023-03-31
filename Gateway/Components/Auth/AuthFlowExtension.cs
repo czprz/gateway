@@ -19,16 +19,7 @@ public static class AuthFlowExtension
 
         builder.Services.AddHttpClient("authority_endpoint", client =>
             {
-                // TODO: Add validation on authority url. Must start with http or https
-                var authorityUrl = config.Authority;
-                var lastChar = config.Authority[^1];
-                if (lastChar != '/')
-                {
-                    authorityUrl += '/';
-                }
-                // TODO: Improve this, it's a bit hacky
-                
-                client.BaseAddress = new Uri(authorityUrl, UriKind.RelativeOrAbsolute);
+                client.BaseAddress = new Uri(config.Authority, UriKind.RelativeOrAbsolute);
             });
 
         // Discovery
@@ -75,13 +66,11 @@ public static class AuthFlowExtension
                 opt.ClientSecret = config.ClientSecret;
                 opt.ResponseType = OpenIdConnectResponseType.Code;
                 opt.SaveTokens = false;
-                opt.GetClaimsFromUserInfoEndpoint = config.QueryUserInfoEndpoint;
                 opt.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
                 opt.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
                 opt.RequireHttpsMetadata = false;
-
-                var scopes = config.Scopes;
-                var scopeArray = scopes.Split(" ");
+                
+                var scopeArray = config.Scopes?.Split(" ") ?? ArraySegment<string>.Empty;
                 foreach (var scope in scopeArray)
                 {
                     opt.Scope.Add(scope);
@@ -114,19 +103,21 @@ public static class AuthFlowExtension
 
     private static void AddTokenExchangeService(this IServiceCollection services, IConfig config)
     {
-        var strategy = config.TokenExchangeStrategy;
-
-        switch (strategy.ToLower())
+        switch (config.TokenExchangeStrategy)
         {
-            case "none":
+            case TokenExchangeStrategy.None:
             {
                 services.AddSingleton<ITokenExchangeService, NoTokenExchangeService>();
                 break;
             }
-            default:
+            case TokenExchangeStrategy.TokenExchange:
             {
                 services.AddTransient<ITokenExchangeService, TokenExchangeService>();
                 break;
+            }
+            default:
+            {
+                throw new ArgumentOutOfRangeException(nameof(config.TokenExchangeStrategy));
             }
         }
     }

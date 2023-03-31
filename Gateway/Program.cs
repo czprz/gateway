@@ -9,13 +9,10 @@ using RouteConfig = Yarp.ReverseProxy.Configuration.RouteConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<GatewayConfig>(
-    builder.Configuration.GetSection("GatewayConfig"));
+builder.AddConfig();
 
 builder.Services.AddReverseProxy()
     .LoadFromMemory(new Collection<RouteConfig>(), new Collection<ClusterConfig>());
-
-builder.Services.AddSingleton<IConfig, Config>();
 
 builder.Services.AddHealthChecks();
 

@@ -1,18 +1,15 @@
 using Gateway.Components.Auth.Util;
 using Gateway.Components.Routing.Services;
-using Gateway.Config;
 
 namespace Gateway.Components.Auth.Exchanges;
 
 public class TokenExchangeService : ITokenExchangeService
 {
     private readonly IAuthorityFacade _authorityFacade;
-    private readonly IConfig _config;
 
-    public TokenExchangeService(IAuthorityFacade authorityFacade, IConfig config)
+    public TokenExchangeService(IAuthorityFacade authorityFacade)
     {
         _authorityFacade = authorityFacade;
-        _config = config;
     }
 
     public async Task<TokenExchangeResponse> ExchangeTokenAsync(string token, RouteConfig? routeConfig)

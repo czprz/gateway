@@ -15,14 +15,11 @@
       "applicationUrl": "http://localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "GatewayConfig__URL": "http://localhost/test",
-        "GatewayConfig__SessionTimeoutInMin": "30",
-        "GatewayConfig__Authority": "http://localhost:8080/realms/master",
-        "GatewayConfig__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
-        "GatewayConfig__ClientId": "example",
-        "GatewayConfig__ClientSecret": "secret",
-        "GatewayConfig__Scopes": "openid profile email",
-        "GatewayConfig__QueryUserInfoEndpoint": "true"
+        "Gateway__URL": "http://localhost/test",
+        "Gateway__SessionTimeoutInMin": "30",
+        "Gateway__Authority": "http://localhost:8080/realms/master/",
+        "Gateway__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
+        "Gateway__ClientId": "example"
       }
     },
     "https": {
