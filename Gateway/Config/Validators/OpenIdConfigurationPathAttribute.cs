@@ -9,7 +9,7 @@ public class OpenIdConfigurationPathAttribute : ValidationAttribute
     public string InvalidPathErrorMessage { get; set; } = "The {0} field must be a valid path.";
     public string MissingPathErrorMessage { get; set; } = "The {0} field must include \".well-known/openid-configuration\".";
 
-    public override bool IsValid(object value)
+    public override bool IsValid(object? value)
     {
         if (value is not string path)
         {

@@ -21,12 +21,21 @@ public class TokenRefreshService : ITokenRefreshService
         {
             { "grant_type", "refresh_token" },
             { "refresh_token", refreshToken },
-            { "client_id", routeConfig?.ClientId ?? _config.ClientId },
-            { "client_secret", routeConfig?.ClientSecret ?? _config.ClientSecret }
         };
+        
+        AddIfNotNull(payload, "client_id", routeConfig?.ClientId ?? _config.ClientId);
+        AddIfNotNull(payload, "client_secret", routeConfig?.ClientSecret ?? _config.ClientSecret);
         
         var result = await _authorityFacade.GetToken(payload);
 
         return result;
+    }
+
+    private static void AddIfNotNull(IDictionary<string, string> payload, string key, string? value)
+    { 
+        if (!payload.ContainsKey(key) && !string.IsNullOrEmpty(value))
+        {
+            payload.Add(key, value);
+        }
     }
 }
