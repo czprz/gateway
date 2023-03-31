@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Gateway.Config.Validators;
 
 namespace Gateway.Config;
 
@@ -10,7 +11,7 @@ public record GatewayConfig
     public string Authority { get; init; } = "";
     
     [Required(ErrorMessage = "The authority discovery URL is required.")]
-    [RegularExpression(@".*\.well-known/openid-configuration$", ErrorMessage = "The path must end with '.well-known/openid-configuration'.")]
+    [OpenIdConfigurationPath(InvalidPathErrorMessage = "The authority discovery URL must not have a slash at the start or end.", MissingPathErrorMessage = "The authority discovery URL must include \".well-known/openid-configuration\".")]
     public string AuthorityDiscoveryUrl { get; init; } = "";
 
     [Range(0, 60, ErrorMessage = "Value for {0} must be between {1} and {2}.")]

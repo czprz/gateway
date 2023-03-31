@@ -28,11 +28,6 @@ public class AuthorityFacade : IAuthorityFacade
         {
             throw new Exception("Unable to load discovery document.");
         }
-
-        // TODO: Handle this more cleanly
-        _discoveryDocument.TokenEndpoint = new Uri(doc.TokenEndpoint).LocalPath;
-        _discoveryDocument.UserInfoEndpoint = new Uri(doc.UserInfoEndpoint).LocalPath;
-        _discoveryDocument.EndSessionEndpoint = doc.EndSessionEndpoint;
     }
 
     public async Task<TokenResponse?> GetToken(Dictionary<string, string> payload)
@@ -41,7 +36,8 @@ public class AuthorityFacade : IAuthorityFacade
         
         var encodedPayload = new FormUrlEncodedContent(payload);
         
-        var response = await client.PostAsync(_discoveryDocument.TokenEndpoint, encodedPayload);
+        var tokenEndpoint = _discoveryDocument.TokenEndpoint.LocalPath;
+        var response = await client.PostAsync(tokenEndpoint, encodedPayload);
         if (!response.IsSuccessStatusCode)
         {
             return null;
@@ -52,7 +48,8 @@ public class AuthorityFacade : IAuthorityFacade
 
     public void Logout(RedirectContext context)
     {
-        context.Response.Redirect(_discoveryDocument.EndSessionEndpoint);
+        var logoutUrl = _discoveryDocument.EndSessionEndpoint.AbsoluteUri;
+        context.Response.Redirect(logoutUrl);
         context.HandleResponse();
     }
 
@@ -65,7 +62,8 @@ public class AuthorityFacade : IAuthorityFacade
             ["access_token"] = accessToken
         };
         
-        var response = await client.PostAsync(_discoveryDocument.UserInfoEndpoint, new FormUrlEncodedContent(payload));
+        var userInfoEndpoint = _discoveryDocument.UserInfoEndpoint.LocalPath;
+        var response = await client.PostAsync(userInfoEndpoint, new FormUrlEncodedContent(payload));
         if (!response.IsSuccessStatusCode)
         {
             return null;
