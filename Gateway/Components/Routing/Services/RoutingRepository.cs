@@ -23,12 +23,12 @@ public class RoutingRepository : IRoutingRepository
 
     public void Save(RouteConfig route)
     {
-        if (_routes.ContainsKey(route.Path!))
+        if (_routes.ContainsKey(route.Id))
         {
-            _routes[route.Path!] = route;
+            _routes[route.Id] = route;
         }
         
-        _routes.TryAdd(route.Path!, route);
+        _routes.TryAdd(route.Id, route);
     }
 
     public void Remove(string key)

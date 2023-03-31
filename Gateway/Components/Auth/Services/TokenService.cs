@@ -1,5 +1,7 @@
 using Gateway.Components.Auth.Util;
 using Gateway.Components.Routing.Services;
+using Microsoft.AspNetCore.Http.Features;
+using Yarp.ReverseProxy.Model;
 
 namespace Gateway.Components.Auth.Services;
 
@@ -21,9 +23,14 @@ public class TokenService : ITokenService
 
     public async Task AddToken(HttpContext ctx)
     {
-        var currentUrl = ctx.Request.Path.ToString().ToLower();
-        var routeConfig = _routingRepository.Get(currentUrl);
+        var proxy = ctx.Features.Get<IReverseProxyFeature>();
+        if (proxy == null)
+        {
+            return;
+        }
         
+        var routeConfig = _routingRepository.Get(proxy.Route.Config.RouteId);
+
         if (IsExpired(ctx) && HasRefreshToken(ctx))
         {
             _apiTokenService.InvalidateApiTokens(ctx);
@@ -36,7 +43,9 @@ public class TokenService : ITokenService
         if (!string.IsNullOrEmpty(token)) // TODO: Filter APIs so only those who should have a token get one
         {
             var apiToken = await GetApiToken(ctx, token, routeConfig);
-
+            
+            // TODO: Perhaps can get url from proxy
+            var currentUrl = ctx.Request.Path.ToString().ToLower();
             _logger.LogDebug("Adding token to request: {currentUrl}", currentUrl);
 
             ctx.Request.Headers.Add("Authorization", "Bearer " + apiToken);

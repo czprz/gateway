@@ -8,7 +8,7 @@ public class AuthorityFacade : IAuthorityFacade
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfig _config;
 
-    private readonly DiscoveryDocument _discoveryDocument = new();
+    private DiscoveryDocument _discoveryDocument = new();
 
     public AuthorityFacade(IHttpClientFactory httpClientFactory, IConfig config)
     {
@@ -23,10 +23,8 @@ public class AuthorityFacade : IAuthorityFacade
         var client = _httpClientFactory.CreateClient("authority_endpoint");
         
         var doc = await client.GetFromJsonAsync<DiscoveryDocument>(_config.AuthorityDiscoveryUrl);
-        if (doc == null)
-        {
-            throw new Exception("Unable to load discovery document.");
-        }
+
+        _discoveryDocument = doc ?? throw new Exception("Unable to load discovery document.");
     }
 
     public async Task<TokenResponse?> GetToken(Dictionary<string, string> payload)

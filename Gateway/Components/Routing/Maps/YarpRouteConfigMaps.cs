@@ -8,7 +8,7 @@ public class YarpRouteConfigMaps : Profile
     public YarpRouteConfigMaps()
     {
         CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.RouteConfig>()
-            .ForMember(x => x.RouteId, opt => opt.MapFrom(o => Guid.NewGuid()))
+            .ForMember(x => x.RouteId, opt => opt.MapFrom(o => o.Id))
             .ForMember(x => x.ClusterId, opt => opt.MapFrom((_, _, _, context) => context.Items["ClusterId"]))
             .ForMember(d => d.AuthorizationPolicy, opt => opt.MapFrom((_, _, _, context) => context.Items["AuthorizationPolicy"]))
             .ForMember(x => x.Match, opt => opt.MapFrom((s, _, _, context) =>

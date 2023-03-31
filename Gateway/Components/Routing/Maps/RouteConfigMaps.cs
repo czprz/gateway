@@ -9,6 +9,7 @@ public class RouteConfigMaps : Profile
     public RouteConfigMaps()
     {
         CreateMap<RouteConfigDto, RouteConfig>()
+            .ForMember(x => x.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
             .ReverseMap();
         CreateMap<QueryParameterDto, QueryParameterMatch>()
             .ReverseMap();

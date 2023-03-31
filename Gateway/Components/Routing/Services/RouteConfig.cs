@@ -2,6 +2,7 @@ namespace Gateway.Components.Routing.Services;
 
 public class RouteConfig
 {
+    public string Id { get; init; } = Guid.NewGuid().ToString();
     public string? Path { get; init; }
     public IReadOnlyList<string>? Methods { get; init; }
     public IReadOnlyList<string>? Hosts { get; init; }

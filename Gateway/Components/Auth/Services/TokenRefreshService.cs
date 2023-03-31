@@ -20,7 +20,7 @@ public class TokenRefreshService : ITokenRefreshService
         var payload = new Dictionary<string, string>
         {
             { "grant_type", "refresh_token" },
-            { "refresh_token", refreshToken },
+            { "refresh_token", refreshToken }
         };
         
         AddIfNotNull(payload, "client_id", routeConfig?.ClientId ?? _config.ClientId);
