@@ -21,8 +21,7 @@ public class AuthorityFacade : IAuthorityFacade
     private async void LoadDiscoveryDocument()
     {
         var client = _httpClientFactory.CreateClient("authority_endpoint");
-
-        // TODO: Add validation on discovery document url. Must not start with / or end with /
+        
         var doc = await client.GetFromJsonAsync<DiscoveryDocument>(_config.AuthorityDiscoveryUrl);
         if (doc == null)
         {
