@@ -1,3 +1,4 @@
+using Asp.Versioning.Builder;
 using AutoMapper;
 using Gateway.Components.Routing.Endpoints;
 using Gateway.Components.Routing.Maps;
@@ -24,8 +25,8 @@ public static class RoutingServiceExtension
         builder.Services.AddTransient<IYarpFacade, YarpFacade>();
     }
 
-    public static void UseRoutingService(this WebApplication app)
+    public static void UseRoutingService(this WebApplication app, ApiVersionSet versionSet)
     {
-        app.AddRoutingEndpoints();
+        app.AddRoutingEndpoints(versionSet);
     }
 }

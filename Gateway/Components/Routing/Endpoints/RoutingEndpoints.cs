@@ -1,3 +1,4 @@
+using Asp.Versioning.Builder;
 using AutoMapper;
 using Gateway.Components.Routing.Models;
 using Gateway.Components.Routing.Services;
@@ -7,11 +8,17 @@ namespace Gateway.Components.Routing.Endpoints;
 
 public static class RoutingEndpoints
 {
-    public static void AddRoutingEndpoints(this WebApplication app)
+    public static void AddRoutingEndpoints(this WebApplication app, ApiVersionSet apiVersionSet)
     {
-        app.MapGet("/api/routes", GetRoutes);
-        app.MapPost("api/routes", AddRoute);
-        app.MapDelete("api/routes/{route}", RemoveRoute);
+        app.MapGet("/api/routes", GetRoutes)
+            .WithApiVersionSet(apiVersionSet)
+            .MapToApiVersion(1);
+        app.MapPost("api/routes", AddRoute)
+            .WithApiVersionSet(apiVersionSet)
+            .MapToApiVersion(1);
+        app.MapDelete("api/routes/{route}", RemoveRoute)
+            .WithApiVersionSet(apiVersionSet)
+            .MapToApiVersion(1);
     }
 
     private static async Task<IResult> GetRoutes(IProxyManager proxyManager)

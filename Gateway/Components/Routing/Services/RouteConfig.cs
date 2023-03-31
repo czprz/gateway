@@ -2,22 +2,23 @@ namespace Gateway.Components.Routing.Services;
 
 public class RouteConfig
 {
+    public string? Path { get; init; }
     public IReadOnlyList<string>? Methods { get; init; }
     public IReadOnlyList<string>? Hosts { get; init; }
-    public string? Path { get; init; }
     public IReadOnlyList<QueryParameterMatch>? QueryParameters { get; init; }
     public IReadOnlyList<HeaderMatch>? Headers { get; init; }
     
-    public bool? AuthenticationRequired { get; init; }
+    public bool? UseAuthentication { get; init; }
+    
     public string? ClientId { get; init; }
     public string? ClientSecret { get; init; }
     public string? Audience { get; init; }
     public string? Scopes { get; init; }
 
-    public IReadOnlyList<Proxy> Proxies { get; init; }
+    public IReadOnlyList<Upstream> Upstreams { get; init; }
 }
 
-public class Proxy
+public class Upstream
 {
     public string Address { get; set; } = "";
     public string? HealthProbeAddress { get; set; }

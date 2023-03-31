@@ -44,7 +44,7 @@ public class YarpFacade : IYarpFacade
 
     private void ConfigureValuesForMapping(IMappingOperationOptions opt, ClusterConfig clusterConfig, RouteConfig routeConfig)
     {
-        var authReq = routeConfig.AuthenticationRequired ?? false;
+        var authReq = routeConfig.UseAuthentication ?? false;
         
         opt.Items["ClusterId"] = clusterConfig.ClusterId;
         opt.Items["AuthorizationPolicy"] = _config.AuthFlowEnabled && authReq ? _config.AuthFlowKey : null;
