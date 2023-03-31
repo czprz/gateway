@@ -1,4 +1,3 @@
-using Asp.Versioning.Builder;
 using Gateway.Components.Auth.Endpoints;
 using Gateway.Components.Auth.Exchanges;
 using Gateway.Components.Auth.Handlers;
@@ -104,13 +103,13 @@ public static class AuthFlowExtension
             });
     }
 
-    public static void UseAuthFlow(this WebApplication app, ApiVersionSet apiVersionSet)
+    public static void UseAuthFlow(this WebApplication app)
     {
         app.UseSession();
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCookiePolicy();
-        app.AddAuthEndpoints(apiVersionSet);
+        app.AddAuthEndpoints();
     }
 
     private static void AddTokenExchangeService(this IServiceCollection services, IConfig config)

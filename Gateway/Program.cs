@@ -40,6 +40,6 @@ app.UseSwagger();
 app.UseRouting();
 
 app.UseRoutingService(versionSet);
-app.UseAuthFlow(versionSet);
+app.UseAuthFlow();
 
 app.Run();

@@ -11,12 +11,15 @@ public static class RoutingEndpoints
     public static void AddRoutingEndpoints(this WebApplication app, ApiVersionSet apiVersionSet)
     {
         app.MapGet("/api/routes", GetRoutes)
+            .WithTags("Routing")
             .WithApiVersionSet(apiVersionSet)
             .MapToApiVersion(1);
         app.MapPost("api/routes", AddRoute)
+            .WithTags("Routing")
             .WithApiVersionSet(apiVersionSet)
             .MapToApiVersion(1);
         app.MapDelete("api/routes/{route}", RemoveRoute)
+            .WithTags("Routing")
             .WithApiVersionSet(apiVersionSet)
             .MapToApiVersion(1);
     }

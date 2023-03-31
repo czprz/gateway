@@ -1,4 +1,3 @@
-using Asp.Versioning.Builder;
 using Gateway.Components.Auth.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -8,17 +7,14 @@ namespace Gateway.Components.Auth.Endpoints;
 
 public static class AuthEndpoints
 {
-    public static void AddAuthEndpoints(this WebApplication app, ApiVersionSet apiVersionSet)
+    public static void AddAuthEndpoints(this WebApplication app)
     {
         app.MapGet("/login", UseLoginEndpoint)
-            .WithApiVersionSet(apiVersionSet)
-            .HasApiVersion(1);
+            .WithTags("Authentication");
         app.MapGet("/logout", UseLogoutEndpoint)
-            .WithApiVersionSet(apiVersionSet)
-            .HasApiVersion(1);
+            .WithTags("Authentication");
         app.MapGet("/userinfo", UseUserInfoEndpoint)
-            .WithApiVersionSet(apiVersionSet)
-            .HasApiVersion(1);
+            .WithTags("Authentication");
     }
 
     private static void UseLoginEndpoint(string? redirectUrl, HttpContext? context)

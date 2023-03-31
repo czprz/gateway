@@ -22,10 +22,10 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 
     private static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
     {
-        var text = new StringBuilder("Gateway API.");
+        var text = new StringBuilder("APIs for authentication and registering of routes.");
         var info = new OpenApiInfo
         {
-            Title = "Version API",
+            Title = "Gateway API",
             Version = description.ApiVersion.ToString(),
             License = new OpenApiLicense { Name = "The Unlicense", Url = new Uri("https://unlicense.org/") },
             Contact = new OpenApiContact
