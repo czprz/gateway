@@ -10,6 +10,7 @@ public static class RoutingEndpoints
 {
     public static void AddRoutingEndpoints(this WebApplication app, ApiVersionSet apiVersionSet)
     {
+        // TODO: Endpoints should only be accessible for upstream services
         app.MapGet("/api/routes", GetRoutes)
             .WithTags("Routing")
             .WithApiVersionSet(apiVersionSet)
