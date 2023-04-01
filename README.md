@@ -34,10 +34,6 @@ Currently no tests implemented..
 docker-compose up
 ```
 
-### API
-
-Section to be added
-
 ### Built With
 
 * [.NET 7](https://dotnet.microsoft.com/en-us/)
