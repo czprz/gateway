@@ -1,5 +1,5 @@
 using AutoMapper;
-using Gateway.Components.Routing.Services;
+using Gateway.Components.Routing.Models;
 
 namespace Gateway.Components.Routing.Maps;
 
@@ -7,14 +7,36 @@ public class YarpClusterConfigMaps : Profile
 {
     public YarpClusterConfigMaps()
     {
-        CreateMap<RouteConfig, global::Yarp.ReverseProxy.Configuration.ClusterConfig>()
+        CreateMap<RouteConfig, Yarp.ReverseProxy.Configuration.ClusterConfig>()
             .ForMember(d => d.ClusterId, opt => opt.MapFrom(o => Guid.NewGuid()))
-            .ForMember(d => d.Destinations, opt => opt.MapFrom(s => s.Upstreams.Select(x =>
-                // TODO: Add StringComparer.OrdinalIgnoreCase to the dictionary
-                new global::Yarp.ReverseProxy.Configuration.DestinationConfig
-                {
-                    Address = x.Address,
-                    Health = x.HealthProbeAddress
-                }).ToDictionary(k => k.Address).AsReadOnly()));
+            .ForMember(d => d.LoadBalancingPolicy, opt => opt.MapFrom(o => GetLoadBalancingPolicy(o.LoadBalancingPolicy)))
+            .ForMember(d => d.Destinations, opt => opt.MapFrom(s => GetDestinations(s.Upstreams)));
+    }
+    
+    private static IReadOnlyDictionary<string, Yarp.ReverseProxy.Configuration.DestinationConfig> GetDestinations(IEnumerable<Upstream> upstreams)
+    {
+        var destinations = new Dictionary<string, Yarp.ReverseProxy.Configuration.DestinationConfig>(StringComparer.OrdinalIgnoreCase);
+        foreach (var upstream in upstreams)
+        {
+            destinations.Add(upstream.Address, new Yarp.ReverseProxy.Configuration.DestinationConfig
+            {
+                Address = upstream.Address,
+                Health = upstream.HealthProbeAddress
+            });
+        }
+        return destinations;
+    }
+
+    private static string? GetLoadBalancingPolicy(LoadBalancingPolicy? loadBalancingPolicy)
+    {
+        return loadBalancingPolicy switch
+        {
+            LoadBalancingPolicy.PowerOfTwoChoices => "PowerOfTwoChoices",
+            LoadBalancingPolicy.FirstAlphabetical => "FirstAlphabetical",
+            LoadBalancingPolicy.RoundRobin => "RoundRobin",
+            LoadBalancingPolicy.LeastRequests => "LeastRequests",
+            LoadBalancingPolicy.Random => "Random",
+            _ => null
+        };
     }
 }

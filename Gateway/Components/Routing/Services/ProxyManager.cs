@@ -1,3 +1,5 @@
+using Gateway.Components.Routing.Models;
+
 namespace Gateway.Components.Routing.Services;
 
 public class ProxyManager : IProxyManager

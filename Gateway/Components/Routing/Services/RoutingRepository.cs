@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using Gateway.Components.Routing.Models;
 
 namespace Gateway.Components.Routing.Services;
 

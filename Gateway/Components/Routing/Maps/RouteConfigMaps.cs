@@ -1,6 +1,6 @@
 using AutoMapper;
+using Gateway.Components.Routing.Endpoints.Models;
 using Gateway.Components.Routing.Models;
-using Gateway.Components.Routing.Services;
 
 namespace Gateway.Components.Routing.Maps;
 

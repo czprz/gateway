@@ -1,6 +1,7 @@
 using AutoMapper;
 using Gateway.Config;
 using Yarp.ReverseProxy.Configuration;
+using RouteConfig = Gateway.Components.Routing.Models.RouteConfig;
 
 namespace Gateway.Components.Routing.Services;
 

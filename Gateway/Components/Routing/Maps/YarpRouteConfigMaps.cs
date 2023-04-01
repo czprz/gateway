@@ -1,5 +1,5 @@
 using AutoMapper;
-using Gateway.Components.Routing.Services;
+using Gateway.Components.Routing.Models;
 
 namespace Gateway.Components.Routing.Maps;
 

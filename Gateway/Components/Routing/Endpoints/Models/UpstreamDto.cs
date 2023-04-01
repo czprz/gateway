@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Gateway.Components.Routing.Models;
+namespace Gateway.Components.Routing.Endpoints.Models;
 
 public class UpstreamDto
 {

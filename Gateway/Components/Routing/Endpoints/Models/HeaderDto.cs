@@ -1,4 +1,4 @@
-namespace Gateway.Components.Routing.Models;
+namespace Gateway.Components.Routing.Endpoints.Models;
 
 public class HeaderDto
 {

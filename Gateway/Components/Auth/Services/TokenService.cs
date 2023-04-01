@@ -1,6 +1,6 @@
 using Gateway.Components.Auth.Util;
+using Gateway.Components.Routing.Models;
 using Gateway.Components.Routing.Services;
-using Microsoft.AspNetCore.Http.Features;
 using Yarp.ReverseProxy.Model;
 
 namespace Gateway.Components.Auth.Services;

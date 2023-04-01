@@ -1,6 +1,4 @@
-using Gateway.Config;
 using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.Extensions.Options;
 
 namespace Gateway.Components.Xsrf;
 
