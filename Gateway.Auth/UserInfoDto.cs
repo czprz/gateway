@@ -1,4 +1,4 @@
-namespace Gateway.Components.Auth;
+namespace Gateway.Auth;
 
 public class UserInfo
 {

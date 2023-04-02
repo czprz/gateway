@@ -1,6 +1,8 @@
-using Gateway.Components.Auth.Services;
+using Gateway.Auth.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Gateway.Components.Auth;
+namespace Gateway.Auth;
 
 public static class AuthFlowTokenPipe
 {

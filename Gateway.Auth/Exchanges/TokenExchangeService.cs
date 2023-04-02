@@ -1,7 +1,7 @@
-using Gateway.Components.Auth.Util;
+using Gateway.Auth.Util;
 using Gateway.Routing.Models;
 
-namespace Gateway.Components.Auth.Exchanges;
+namespace Gateway.Auth.Exchanges;
 
 public class TokenExchangeService : ITokenExchangeService
 {

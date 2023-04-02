@@ -1,9 +1,11 @@
-using Gateway.Components.Auth.Util;
+using Gateway.Auth.Util;
 using Gateway.Routing.Models;
 using Gateway.Routing.Storage;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Yarp.ReverseProxy.Model;
 
-namespace Gateway.Components.Auth.Services;
+namespace Gateway.Auth.Services;
 
 public class TokenService : ITokenService
 {

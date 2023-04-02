@@ -1,8 +1,8 @@
+using Gateway.Auth.Util;
 using Gateway.Common.Config;
-using Gateway.Components.Auth.Util;
 using Gateway.Routing.Models;
 
-namespace Gateway.Components.Auth.Services;
+namespace Gateway.Auth.Services;
 
 public class TokenRefreshService : ITokenRefreshService
 {

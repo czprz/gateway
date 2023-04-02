@@ -1,6 +1,6 @@
 using Gateway.Routing.Models;
 
-namespace Gateway.Components.Auth.Exchanges;
+namespace Gateway.Auth.Exchanges;
 
 public class NoTokenExchangeService : ITokenExchangeService
 {

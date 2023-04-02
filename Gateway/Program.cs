@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using Asp.Versioning.Conventions;
+using Gateway.Auth;
 using Gateway.Common.Config;
-using Gateway.Components.Auth;
 using Gateway.Routing;
 using Gateway.Swagger;
 using Yarp.ReverseProxy.Configuration;

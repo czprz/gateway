@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
-namespace Gateway.Components.Auth.Util;
+namespace Gateway.Auth.Util;
 
 public interface IAuthorityFacade
 {

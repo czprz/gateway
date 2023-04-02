@@ -1,8 +1,10 @@
-using Gateway.Components.Auth.Exchanges;
-using Gateway.Components.Auth.Util;
+using Gateway.Auth.Exchanges;
+using Gateway.Auth.Util;
 using Gateway.Routing.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
-namespace Gateway.Components.Auth.Services;
+namespace Gateway.Auth.Services;
 
 public class ApiTokenService : IApiTokenService
 {

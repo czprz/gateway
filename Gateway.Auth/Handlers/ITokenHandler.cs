@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
-namespace Gateway.Components.Auth.Handlers;
+namespace Gateway.Auth.Handlers;
 
 public interface ITokenHandler
 {

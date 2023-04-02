@@ -1,15 +1,18 @@
+using Gateway.Auth.Endpoints;
+using Gateway.Auth.Exchanges;
+using Gateway.Auth.Handlers;
+using Gateway.Auth.Services;
+using Gateway.Auth.Util;
 using Gateway.Common.Config;
-using Gateway.Components.Auth.Endpoints;
-using Gateway.Components.Auth.Exchanges;
-using Gateway.Components.Auth.Handlers;
-using Gateway.Components.Auth.Services;
-using Gateway.Components.Auth.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using TokenHandler = Gateway.Components.Auth.Handlers.TokenHandler;
+using TokenHandler = Gateway.Auth.Handlers.TokenHandler;
 
-namespace Gateway.Components.Auth;
+namespace Gateway.Auth;
 
 public static class AuthFlowExtension
 {

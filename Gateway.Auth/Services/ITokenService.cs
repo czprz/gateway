@@ -1,4 +1,6 @@
-namespace Gateway.Components.Auth.Services;
+using Microsoft.AspNetCore.Http;
+
+namespace Gateway.Auth.Services;
 
 public interface ITokenService
 {

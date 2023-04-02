@@ -1,6 +1,7 @@
 using Gateway.Routing.Models;
+using Microsoft.AspNetCore.Http;
 
-namespace Gateway.Components.Auth.Services;
+namespace Gateway.Auth.Services;
 
 public interface IApiTokenService
 {

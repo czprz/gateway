@@ -1,7 +1,8 @@
+using System.Net.Http.Json;
 using Gateway.Common.Config;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
-namespace Gateway.Components.Auth.Util;
+namespace Gateway.Auth.Util;
 
 public class AuthorityFacade : IAuthorityFacade
 {

@@ -1,7 +1,8 @@
-using Gateway.Components.Auth.Util;
+using Gateway.Auth.Util;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http;
 
-namespace Gateway.Components.Auth.Handlers;
+namespace Gateway.Auth.Handlers;
 
 public class TokenHandler : ITokenHandler
 {

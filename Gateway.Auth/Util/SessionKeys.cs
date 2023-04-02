@@ -1,4 +1,4 @@
-namespace Gateway.Components.Auth.Util;
+namespace Gateway.Auth.Util;
 
 public class SessionKeys {
     public const string ACCESS_TOKEN = "accessToken";

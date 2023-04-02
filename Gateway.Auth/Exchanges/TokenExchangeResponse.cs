@@ -1,4 +1,4 @@
-namespace Gateway.Components.Auth.Exchanges;
+namespace Gateway.Auth.Exchanges;
 
 public class TokenExchangeResponse
 {
