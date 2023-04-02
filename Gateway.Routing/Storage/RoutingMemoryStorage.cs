@@ -12,14 +12,16 @@ public class MemoryRoutingStorage : IRoutingRepository
         _routes = new ConcurrentDictionary<string, RouteConfig>();
     }
     
-    public IReadOnlyList<RouteConfig> Get()
+    public Task<IReadOnlyList<RouteConfig>> Get()
     {
-        return _routes.Values.ToList();
+        var routes = (IReadOnlyList<RouteConfig>) _routes.Values.ToList().AsReadOnly();
+        return Task.FromResult(routes);
     }
 
-    public RouteConfig? Get(string key)
+    public Task<RouteConfig?> Get(string key)
     {
-        return _routes.TryGetValue(key, out var route) ? route : null;
+        var routeValue =_routes.TryGetValue(key, out var route) ? route : null;
+        return Task.FromResult(routeValue);
     }
 
     public void Save(RouteConfig route)

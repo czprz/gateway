@@ -23,4 +23,7 @@ public class Config : IConfig
     public string? ClientId => _options.Value.ClientId;
     public string? ClientSecret => _options.Value.ClientSecret;
     public string? Scopes => _options.Value.Scopes;
+    
+    public StorageType? StorageType => _options.Value.StorageType;
+    public string? StorageConnectionString => _options.Value.StorageConnectionString;
 }

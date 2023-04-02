@@ -1,26 +1,37 @@
 using Gateway.Routing.Models;
+using Gateway.Routing.Storage.Rational;
+using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.Routing.Storage;
 
 public class RationalDbRoutingStorage : IRoutingRepository
 {
-    public IReadOnlyList<RouteConfig> Get()
+    private readonly MyDbContext _dbContext;
+
+    public RationalDbRoutingStorage(MyDbContext dbContext)
     {
-        throw new NotImplementedException();
+        _dbContext = dbContext;
     }
 
-    public RouteConfig? Get(string key)
+    public async Task<IReadOnlyList<RouteConfig>> Get()
     {
-        throw new NotImplementedException();
+        var routes = await _dbContext.RouteConfigs.ToListAsync();
+        return routes;
     }
 
-    public void Save(RouteConfig route)
+    public async Task<RouteConfig?> Get(string key)
     {
-        throw new NotImplementedException();
+        var routes = await _dbContext.RouteConfigs.FirstOrDefaultAsync(x => x.Id == key);
+        return routes;
+    }
+
+    public async void Save(RouteConfig route)
+    {
+        await _dbContext.RouteConfigs.AddAsync(route);
     }
 
     public void Remove(string key)
     {
-        throw new NotImplementedException();
+        _dbContext.RouteConfigs.Remove(new RouteConfig { Id = key });
     }
 }

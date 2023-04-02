@@ -4,7 +4,7 @@ namespace Gateway.Routing.Services;
 
 public interface IProxyManager
 {
-    IReadOnlyList<RouteConfig> GetRoutes();
+    Task<IReadOnlyList<RouteConfig>> GetRoutes();
     void AddRoute(RouteConfig route);
     void RemoveRoute(string route);
 }

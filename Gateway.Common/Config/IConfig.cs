@@ -11,4 +11,6 @@ public interface IConfig
     public string? ClientId { get; }
     public string? ClientSecret { get; }
     public string? Scopes { get; }
+    public StorageType? StorageType { get; }
+    public string? StorageConnectionString { get; }
 }

@@ -29,4 +29,10 @@ public record GatewayConfig
     
     [RegularExpression(@"^[a-zA-Z0-9._/-]+$", ErrorMessage = "The scope must contain only alphanumeric characters, dots, underscores, slashes, and dashes.")]
     public string? Scopes { get; init; }
+    
+    [EnumDataType(typeof(StorageType), ErrorMessage = "The storage type must be either 'Memory' or 'RationalDb'.")]
+    public StorageType? StorageType { get; init; }
+    
+    [RegularExpression(@"^Server=(.+);Database=(.+);User Id=(.+);Password=(.+)$", ErrorMessage = "The connection string must be a valid SQL connection string.")]
+    public string? StorageConnectionString { get; init; }
 }

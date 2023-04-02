@@ -30,9 +30,9 @@ public static class RoutingEndpoints
 
     private static async Task<IResult> GetRoutes(IProxyManager proxyManager)
     {
-        var routes = proxyManager.GetRoutes();
+        var routes = await proxyManager.GetRoutes();
 
-        return routes.Count == 0 ? Results.NotFound() : Results.Ok(proxyManager.GetRoutes());
+        return routes.Count == 0 ? Results.NotFound() : Results.Ok(routes);
     }
 
     private static async Task<IResult> AddRoute([FromBody] RouteConfigDto routeConfigDto, IProxyManager proxyManager, IMapper mapper)

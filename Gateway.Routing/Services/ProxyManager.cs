@@ -14,26 +14,26 @@ public class ProxyManager : IProxyManager
         _routingRepository = routingRepository;
     }
 
-    public IReadOnlyList<RouteConfig> GetRoutes()
+    public async Task<IReadOnlyList<RouteConfig>> GetRoutes()
     {
-        return _routingRepository.Get();
+        return await _routingRepository.Get();
     }
 
-    public void AddRoute(RouteConfig route)
+    public async void AddRoute(RouteConfig route)
     {
         // TODO: Add check if route already exists
         _routingRepository.Save(route);
         
-        var routes = _routingRepository.Get();
+        var routes = await _routingRepository.Get();
         
         _yarpFacade.Update(routes);
     }
 
-    public void RemoveRoute(string route)
+    public async void RemoveRoute(string route)
     {
         _routingRepository.Remove(route);
         
-        var routes = _routingRepository.Get();
+        var routes = await _routingRepository.Get();
         
         _yarpFacade.Update(routes);
     }
