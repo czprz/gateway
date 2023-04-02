@@ -31,7 +31,7 @@ public class TokenService : ITokenService
             return;
         }
         
-        var routeConfig = _routingRepository.Get(proxy.Route.Config.RouteId);
+        var routeConfig = await _routingRepository.Get(proxy.Route.Config.RouteId);
 
         if (IsExpired(ctx) && HasRefreshToken(ctx))
         {
