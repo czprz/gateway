@@ -1,9 +1,9 @@
+using Gateway.Common.Config;
 using Gateway.Components.Auth.Endpoints;
 using Gateway.Components.Auth.Exchanges;
 using Gateway.Components.Auth.Handlers;
 using Gateway.Components.Auth.Services;
 using Gateway.Components.Auth.Util;
-using Gateway.Config;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;

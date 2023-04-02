@@ -1,8 +1,8 @@
 using System.Collections.ObjectModel;
 using Asp.Versioning.Conventions;
+using Gateway.Common.Config;
 using Gateway.Components.Auth;
-using Gateway.Components.Routing;
-using Gateway.Config;
+using Gateway.Routing;
 using Gateway.Swagger;
 using Yarp.ReverseProxy.Configuration;
 using RouteConfig = Yarp.ReverseProxy.Configuration.RouteConfig;

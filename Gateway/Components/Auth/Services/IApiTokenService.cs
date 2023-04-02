@@ -1,4 +1,4 @@
-using Gateway.Components.Routing.Models;
+using Gateway.Routing.Models;
 
 namespace Gateway.Components.Auth.Services;
 

@@ -1,4 +1,4 @@
-using Gateway.Config;
+using Gateway.Common.Config;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
 namespace Gateway.Components.Auth.Util;

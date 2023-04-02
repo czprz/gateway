@@ -1,6 +1,6 @@
+using Gateway.Common.Config;
 using Gateway.Components.Auth.Util;
-using Gateway.Components.Routing.Models;
-using Gateway.Config;
+using Gateway.Routing.Models;
 
 namespace Gateway.Components.Auth.Services;
 

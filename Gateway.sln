@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "Gateway\Gateway.csproj", "{8A85A870-940F-4238-8E6D-8E6814D564C1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway.Routing", "Gateway.Routing\Gateway.Routing.csproj", "{6791D7DB-2F11-4281-A187-57ED34BFADBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway.Common", "Gateway.Common\Gateway.Common.csproj", "{29732909-46E1-45B7-B856-383AF867FBB8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{8A85A870-940F-4238-8E6D-8E6814D564C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A85A870-940F-4238-8E6D-8E6814D564C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A85A870-940F-4238-8E6D-8E6814D564C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6791D7DB-2F11-4281-A187-57ED34BFADBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6791D7DB-2F11-4281-A187-57ED34BFADBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6791D7DB-2F11-4281-A187-57ED34BFADBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6791D7DB-2F11-4281-A187-57ED34BFADBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29732909-46E1-45B7-B856-383AF867FBB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29732909-46E1-45B7-B856-383AF867FBB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29732909-46E1-45B7-B856-383AF867FBB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29732909-46E1-45B7-B856-383AF867FBB8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

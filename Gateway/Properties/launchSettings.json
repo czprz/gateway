@@ -18,6 +18,7 @@
         "Gateway__URL": "http://localhost/test",
         "Gateway__SessionTimeoutInMin": "30",
         "Gateway__Authority": "http://localhost:8080/realms/master/",
+        "Gateway__ConnectionString": "Server=localhost;Database=Gateway;User Id=sa;Password=Password123;",
         "Gateway__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
         "Gateway__ClientId": "example"
       }
