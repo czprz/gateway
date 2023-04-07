@@ -8,7 +8,9 @@ public static class AuthFlowTokenPipe
 {
     public static void AddAuthFlowTokenPipe(this IReverseProxyApplicationBuilder pipe)
     {
-        var tokenService = pipe.ApplicationServices.GetRequiredService<ITokenService>();
+        var tokenService = pipe.ApplicationServices.CreateScope()
+            .ServiceProvider
+            .GetRequiredService<ITokenService>();
 
         pipe.Use(async (ctx, next) =>
         {

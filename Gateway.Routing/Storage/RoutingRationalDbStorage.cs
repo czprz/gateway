@@ -1,37 +1,70 @@
+using AutoMapper;
 using Gateway.Routing.Models;
 using Gateway.Routing.Storage.Rational;
+using Gateway.Routing.Storage.Rational.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gateway.Routing.Storage;
 
 public class RationalDbRoutingStorage : IRoutingRepository
 {
-    private readonly MyDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public RationalDbRoutingStorage(MyDbContext dbContext)
+    public RationalDbRoutingStorage(IMapper mapper)
     {
-        _dbContext = dbContext;
+        _mapper = mapper;
     }
 
     public async Task<IReadOnlyList<RouteConfig>> Get()
     {
-        var routes = await _dbContext.RouteConfigs.ToListAsync();
+        await using var db = new RouteContext();
+
+        var routeConfigDbs = await db.RouteConfigs
+            .Include(x => x.Hosts)
+            .Include(x => x.Methods)
+            .Include(x => x.Headers)
+            .Include(x => x.QueryParameters)
+            .Include(x => x.Upstreams)
+            .ToListAsync();
+        
+        var routes = _mapper.Map<IReadOnlyList<RouteConfig>>(routeConfigDbs);
+
         return routes;
     }
 
     public async Task<RouteConfig?> Get(string key)
     {
-        var routes = await _dbContext.RouteConfigs.FirstOrDefaultAsync(x => x.Id == key);
-        return routes;
+        await using var db = new RouteContext();
+
+        var routeConfigDb = await db.RouteConfigs.
+            Include(x => x.Headers)
+            .FirstOrDefaultAsync(x => x.Id.ToString() == key);
+        if (routeConfigDb == null)
+        {
+            return null;
+        }
+
+        var route = _mapper.Map<RouteConfig>(routeConfigDb);
+
+        return route;
     }
 
     public async void Save(RouteConfig route)
     {
-        await _dbContext.RouteConfigs.AddAsync(route);
+        await using var db = new RouteContext();
+        await db.Database.EnsureCreatedAsync();
+
+        var routeConfig = _mapper.Map<RouteConfigDb>(route);
+        await db.RouteConfigs.AddAsync(routeConfig);
+
+        await db.SaveChangesAsync();
     }
 
-    public void Remove(string key)
+    public async void Remove(string key)
     {
-        _dbContext.RouteConfigs.Remove(new RouteConfig { Id = key });
+        await using var db = new RouteContext();
+        await db.Database.EnsureDeletedAsync();
+
+        db.RouteConfigs.Remove(new RouteConfigDb { Id = Guid.Parse(key) });
     }
 }

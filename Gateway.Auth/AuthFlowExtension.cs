@@ -32,13 +32,13 @@ public static class AuthFlowExtension
         builder.Services.AddTokenExchangeService(config);
 
         // Handlers
-        builder.Services.AddTransient<ITokenHandler, TokenHandler>();
-        builder.Services.AddTransient<ILogoutHandler, LogoutHandler>();
+        builder.Services.AddScoped<ITokenHandler, TokenHandler>();
+        builder.Services.AddScoped<ILogoutHandler, LogoutHandler>();
 
         // Token Services
-        builder.Services.AddTransient<ITokenRefreshService, TokenRefreshService>();
-        builder.Services.AddTransient<IApiTokenService, ApiTokenService>();
-        builder.Services.AddTransient<ITokenService, TokenService>();
+        builder.Services.AddScoped<ITokenRefreshService, TokenRefreshService>();
+        builder.Services.AddScoped<IApiTokenService, ApiTokenService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
         builder.Services.AddDistributedMemoryCache();
 

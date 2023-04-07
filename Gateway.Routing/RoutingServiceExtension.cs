@@ -6,6 +6,7 @@ using Gateway.Routing.Maps;
 using Gateway.Routing.Services;
 using Gateway.Routing.Storage;
 using Gateway.Routing.Storage.Rational;
+using Gateway.Routing.Storage.Rational.Maps;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +21,7 @@ public static class RoutingServiceExtension
 
         var mapConfig = new MapperConfiguration(cfg =>
         {
+            cfg.AddProfile<RouteConfigDbMaps>();
             cfg.AddProfile<RouteConfigMaps>();
             cfg.AddProfile<YarpRouteConfigMaps>();
             cfg.AddProfile<YarpClusterConfigMaps>();
@@ -43,10 +45,15 @@ public static class RoutingServiceExtension
     {
         switch (config.StorageType)
         {
-            case StorageType.RationalDb:
-                builder.Services.AddDbContext<MyDbContext>(options => options.UseSqlServer());
-                builder.Services.AddSingleton<IRoutingRepository, RationalDbRoutingStorage>();
+            case StorageType.SqlServer:
+            {
+                builder.Services.AddTransient<IRoutingRepository, RationalDbRoutingStorage>();
+                
+                using var dbContext = new RouteContext();
+                dbContext.Database.Migrate();
+
                 break;
+            }
             default:
                 builder.Services.AddSingleton<IRoutingRepository, MemoryRoutingStorage>();
                 break;
