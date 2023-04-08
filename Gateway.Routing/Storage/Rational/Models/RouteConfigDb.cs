@@ -9,10 +9,10 @@ public class RouteConfigDb
     [Key]
     public Guid Id { get; set; }
     public string? Path { get; set; }
-    public ICollection<MethodDb>? Methods { get; set; }
-    public ICollection<HostDb>? Hosts { get; set; }
-    public ICollection<QueryParameterMatchDb>? QueryParameters { get; set; }
-    public ICollection<HeaderMatchDb>? Headers { get; set; }
+    public ICollection<MethodDb> Methods { get; set; }
+    public ICollection<HostDb> Hosts { get; set; }
+    public ICollection<QueryParameterMatchDb> QueryParameters { get; set; }
+    public ICollection<HeaderMatchDb> Headers { get; set; }
     
     public bool? UseAuthentication { get; set; }
     

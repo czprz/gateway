@@ -23,7 +23,9 @@ public class RationalDbRoutingStorage : IRoutingRepository
             .Include(x => x.Hosts)
             .Include(x => x.Methods)
             .Include(x => x.Headers)
+                .ThenInclude(o => o.Values)
             .Include(x => x.QueryParameters)
+                .ThenInclude(o => o.Values)
             .Include(x => x.Upstreams)
             .ToListAsync();
         
