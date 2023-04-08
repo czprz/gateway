@@ -14,6 +14,12 @@ public class ProxyManager : IProxyManager
         _routingRepository = routingRepository;
     }
 
+    public async void Refresh()
+    {
+        var routes = await _routingRepository.Get();
+        _yarpFacade.Update(routes);
+    }
+
     public async Task<IReadOnlyList<RouteConfig>> GetRoutes()
     {
         return await _routingRepository.Get();

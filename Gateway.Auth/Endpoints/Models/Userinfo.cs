@@ -1,6 +1,6 @@
-namespace Gateway.Auth;
+namespace Gateway.Auth.Endpoints.Models;
 
-public class UserInfo
+public class Userinfo
 {
     public string Id { get; set; } = "";
     public string UserName { get; set; } = "";

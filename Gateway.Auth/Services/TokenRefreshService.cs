@@ -1,4 +1,5 @@
 using Gateway.Auth.Util;
+using Gateway.Auth.Util.Models;
 using Gateway.Common.Config;
 using Gateway.Routing.Models;
 

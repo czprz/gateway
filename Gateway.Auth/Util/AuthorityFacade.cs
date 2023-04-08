@@ -1,4 +1,7 @@
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using AutoMapper;
+using Gateway.Auth.Util.Models;
 using Gateway.Common.Config;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 
@@ -8,13 +11,15 @@ public class AuthorityFacade : IAuthorityFacade
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfig _config;
+    private readonly IMapper _mapper;
 
     private DiscoveryDocument _discoveryDocument = new();
 
-    public AuthorityFacade(IHttpClientFactory httpClientFactory, IConfig config)
+    public AuthorityFacade(IHttpClientFactory httpClientFactory, IConfig config, IMapper mapper)
     {
         _httpClientFactory = httpClientFactory;
         _config = config;
+        _mapper = mapper;
 
         LoadDiscoveryDocument();
     }
@@ -51,22 +56,22 @@ public class AuthorityFacade : IAuthorityFacade
         context.HandleResponse();
     }
 
-    public async Task<UserInfoResponse?> GetUserInfo(string accessToken)
+    public async Task<UserInfo?> GetUserInfo(string accessToken)
     {
         var client = _httpClientFactory.CreateClient("authority_endpoint");
         
-        var payload = new Dictionary<string, string>
-        {
-            ["access_token"] = accessToken
-        };
-        
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
         var userInfoEndpoint = _discoveryDocument.UserInfoEndpoint.LocalPath;
-        var response = await client.PostAsync(userInfoEndpoint, new FormUrlEncodedContent(payload));
+        var response = await client.GetAsync(userInfoEndpoint);
         if (!response.IsSuccessStatusCode)
         {
             return null;
         }
         
-        return await response.Content.ReadFromJsonAsync<UserInfoResponse>();
+        var responseUserInfo = await response.Content.ReadFromJsonAsync<UserInfoResponse>();
+        var userInfo = _mapper.Map<UserInfo>(responseUserInfo);
+
+        return userInfo;
     }
 }

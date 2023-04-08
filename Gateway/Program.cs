@@ -1,18 +1,32 @@
-using System.Collections.ObjectModel;
 using Asp.Versioning.Conventions;
+using AutoMapper;
 using Gateway.Auth;
+using Gateway.Auth.Maps;
 using Gateway.Common.Config;
 using Gateway.Routing;
+using Gateway.Routing.Maps;
+using Gateway.Routing.Storage.Rational.Maps;
 using Gateway.Swagger;
 using Yarp.ReverseProxy.Configuration;
-using RouteConfig = Yarp.ReverseProxy.Configuration.RouteConfig;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddConfig();
 
+var mapConfig = new MapperConfiguration(cfg =>
+{
+    cfg.AddProfile<UserInfoMaps>();
+    cfg.AddProfile<RouteConfigDbMaps>();
+    cfg.AddProfile<RouteConfigMaps>();
+    cfg.AddProfile<YarpRouteConfigMaps>();
+    cfg.AddProfile<YarpClusterConfigMaps>();
+});
+
+var mapper = mapConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
+
 builder.Services.AddReverseProxy()
-    .LoadFromMemory(new Collection<RouteConfig>(), new Collection<ClusterConfig>());
+    .LoadFromMemory(new List<RouteConfig>(), new List<ClusterConfig>());
 
 builder.Services.AddHealthChecks();
 

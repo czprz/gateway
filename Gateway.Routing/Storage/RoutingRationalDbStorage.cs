@@ -68,5 +68,7 @@ public class RationalDbRoutingStorage : IRoutingRepository
         await db.Database.EnsureDeletedAsync();
 
         db.RouteConfigs.Remove(new RouteConfigDb { Id = Guid.Parse(key) });
+        
+        await db.SaveChangesAsync();
     }
 }
