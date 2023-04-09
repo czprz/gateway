@@ -4,6 +4,6 @@ namespace Gateway.Routing.Services;
 
 public interface IYarpFacade
 {
-    void Update(IEnumerable<RouteConfig> routes);
+    bool Update(IEnumerable<RouteConfig> routes);
     IReadOnlyList<RouteConfig> Read();
 }

@@ -37,32 +37,23 @@ public static class RoutingEndpoints
 
     private static async Task<IResult> AddRoute([FromBody] RouteConfigDto routeConfigDto, IProxyManager proxyManager, IMapper mapper)
     {
-        try
+        var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
+
+        return await proxyManager.AddRoute(route) switch
         {
-            var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
-            proxyManager.AddRoute(route);
-            
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            // TODO: Better exception handling and logging
-            return Results.BadRequest("Failed to add route");
-        }
+            ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
+            ProxyManagerResult.AlreadyExists => Results.Conflict(),
+            _ => Results.Ok()
+        };
     }
 
     private static async Task<IResult> RemoveRoute(string route, IProxyManager proxyManager)
     {
-        try
+        return await proxyManager.RemoveRoute(route) switch
         {
-            proxyManager.RemoveRoute(route);
-
-            return Results.Ok();
-        }
-        catch (Exception ex)
-        {
-            // TODO: Better exception handling and logging
-            return Results.NotFound();
-        }
+            ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
+            ProxyManagerResult.NotFound => Results.NotFound(),
+            _ => Results.Ok()
+        };
     }
 }

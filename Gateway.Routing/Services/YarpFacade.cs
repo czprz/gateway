@@ -1,5 +1,6 @@
 using AutoMapper;
 using Gateway.Common.Config;
+using Microsoft.Extensions.Logging;
 using Yarp.ReverseProxy.Configuration;
 using RouteConfig = Gateway.Routing.Models.RouteConfig;
 
@@ -10,15 +11,17 @@ public class YarpFacade : IYarpFacade
     private readonly InMemoryConfigProvider _configProvider;
     private readonly IMapper _mapper;
     private readonly IConfig _config;
+    private readonly ILogger<YarpFacade> _logger;
 
-    public YarpFacade(InMemoryConfigProvider configProvider, IMapper mapper, IConfig config)
+    public YarpFacade(InMemoryConfigProvider configProvider, IMapper mapper, IConfig config, ILogger<YarpFacade> logger)
     {
         _configProvider = configProvider;
         _mapper = mapper;
         _config = config;
+        _logger = logger;
     }
 
-    public void Update(IEnumerable<RouteConfig> routes)
+    public bool Update(IEnumerable<RouteConfig> routes)
     {
         var routeConfigs = new List<Yarp.ReverseProxy.Configuration.RouteConfig>();
         var clusterConfigs = new List<ClusterConfig>();
@@ -33,7 +36,16 @@ public class YarpFacade : IYarpFacade
             clusterConfigs.Add(clusterConfig);
         }
 
-        _configProvider.Update(routeConfigs, clusterConfigs);
+        try
+        {
+            _configProvider.Update(routeConfigs, clusterConfigs);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update YARP config: {0}", ex.Message);
+            return false;
+        }
     }
 
     public IReadOnlyList<RouteConfig> Read()

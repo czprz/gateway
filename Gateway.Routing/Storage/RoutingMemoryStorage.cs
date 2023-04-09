@@ -11,7 +11,20 @@ public class MemoryRoutingStorage : IRoutingRepository
     {
         _routes = new ConcurrentDictionary<string, RouteConfig>();
     }
-    
+
+    public Task<bool> Exists(string key)
+    {
+        var exists = _routes.ContainsKey(key);
+        return Task.FromResult(exists);
+    }
+
+    public Task<bool> Exists(RouteConfig route)
+    {
+        // TODO: Add more adv. check
+        var exists = _routes.ContainsKey(route.Id);
+        return Task.FromResult(exists);
+    }
+
     public Task<IReadOnlyList<RouteConfig>> Get()
     {
         var routes = (IReadOnlyList<RouteConfig>) _routes.Values.ToList().AsReadOnly();
@@ -24,7 +37,7 @@ public class MemoryRoutingStorage : IRoutingRepository
         return Task.FromResult(routeValue);
     }
 
-    public void Save(RouteConfig route)
+    public Task<bool> Save(RouteConfig route)
     {
         if (_routes.ContainsKey(route.Id))
         {
@@ -32,10 +45,17 @@ public class MemoryRoutingStorage : IRoutingRepository
         }
         
         _routes.TryAdd(route.Id, route);
+
+        return Task.FromResult(true);
     }
 
-    public void Remove(string key)
+    public Task<bool> Remove(string key)
     {
-        _routes.TryRemove(key, out _);
+        if (_routes.TryRemove(key, out _))
+        {
+            Task.FromResult(true);
+        }
+
+        return Task.FromResult(false);
     }
 }

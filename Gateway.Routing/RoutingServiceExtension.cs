@@ -26,7 +26,7 @@ public static class RoutingServiceExtension
     {
         app.AddRoutingEndpoints(versionSet);
         
-        app.Services.GetService<IProxyManager>()?.Refresh();
+        app.Services.GetService<IProxyManager>()?.AddRoutes();
     }
 
     private static void ChooseRoutingStorage(WebApplicationBuilder builder, IConfig config)

@@ -14,33 +14,52 @@ public class ProxyManager : IProxyManager
         _routingRepository = routingRepository;
     }
 
-    public async void Refresh()
-    {
-        var routes = await _routingRepository.Get();
-        _yarpFacade.Update(routes);
-    }
-
     public async Task<IReadOnlyList<RouteConfig>> GetRoutes()
     {
         return await _routingRepository.Get();
     }
 
-    public async void AddRoute(RouteConfig route)
+    public async void AddRoutes()
     {
-        // TODO: Add check if route already exists
-        _routingRepository.Save(route);
-        
         var routes = await _routingRepository.Get();
-        
         _yarpFacade.Update(routes);
     }
 
-    public async void RemoveRoute(string route)
+    public async Task<ProxyManagerResult> AddRoute(RouteConfig route)
     {
-        _routingRepository.Remove(route);
+        if (await _routingRepository.Exists(route))
+        {
+            return ProxyManagerResult.AlreadyExists;
+        }
         
+        if (!await _routingRepository.Save(route))
+        {
+            return ProxyManagerResult.Error;
+        }
+
         var routes = await _routingRepository.Get();
-        
-        _yarpFacade.Update(routes);
+
+        return _yarpFacade.Update(routes)
+            ? ProxyManagerResult.Ok
+            : ProxyManagerResult.Error;
+    }
+
+    public async Task<ProxyManagerResult> RemoveRoute(string key)
+    {
+        if (!await _routingRepository.Exists(key))
+        {
+            return ProxyManagerResult.NotFound;
+        }
+
+        if (await _routingRepository.Remove(key))
+        {
+            return ProxyManagerResult.Error;
+        }
+
+        var routes = await _routingRepository.Get();
+
+        return _yarpFacade.Update(routes)
+            ? ProxyManagerResult.Ok
+            : ProxyManagerResult.Error;
     }
 }
