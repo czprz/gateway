@@ -1,10 +1,7 @@
-using Gateway.Auth.Handlers;
 using Gateway.Auth.Util;
 using Gateway.Routing.Models;
 using Gateway.Routing.Storage;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Yarp.ReverseProxy.Model;
 
@@ -13,17 +10,14 @@ namespace Gateway.Auth.Services;
 public class TokenService : ITokenService
 {
     private readonly IApiTokenService _apiTokenService;
-    private readonly ILogoutHandler _logoutHandler;
     private readonly ITokenRefreshService _tokenRefreshService;
     private readonly IRoutingRepository _routingRepository;
     private readonly ILogger<TokenService> _logger;
 
-    public TokenService(IApiTokenService apiTokenService, ILogoutHandler logoutHandler,
-        ITokenRefreshService tokenRefreshService,
+    public TokenService(IApiTokenService apiTokenService, ITokenRefreshService tokenRefreshService,
         IRoutingRepository routingRepository, ILogger<TokenService> logger)
     {
         _apiTokenService = apiTokenService;
-        _logoutHandler = logoutHandler;
         _tokenRefreshService = tokenRefreshService;
         _routingRepository = routingRepository;
         _logger = logger;
@@ -60,7 +54,6 @@ public class TokenService : ITokenService
 
         var apiToken = await GetApiToken(ctx, token, routeConfig);
 
-        // TODO: Perhaps can get url from proxy
         var currentUrl = ctx.Request.Path.ToString().ToLower();
         _logger.LogDebug("Adding token to request: {currentUrl}", currentUrl);
 
