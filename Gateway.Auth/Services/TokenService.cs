@@ -30,8 +30,7 @@ public class TokenService : ITokenService
         {
             return;
         }
-
-        // TODO: CHeck if this is hit when using non-registered routes
+        
         var routeConfig = await _routingRepository.Get(proxy.Route.Config.RouteId);
         if (routeConfig == null)
         {
