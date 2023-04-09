@@ -32,8 +32,8 @@ public static class AuthFlowExtension
         builder.Services.AddTokenExchangeService(config);
 
         // Handlers
-        builder.Services.AddScoped<ITokenHandler, TokenHandler>();
-        builder.Services.AddScoped<ILogoutHandler, LogoutHandler>();
+        builder.Services.AddTransient<ITokenHandler, TokenHandler>();
+        builder.Services.AddTransient<ILogoutHandler, LogoutHandler>();
 
         // Token Services
         builder.Services.AddScoped<ITokenRefreshService, TokenRefreshService>();
@@ -72,7 +72,7 @@ public static class AuthFlowExtension
                 opt.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
                 opt.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
                 opt.RequireHttpsMetadata = false;
-                
+
                 var scopeArray = config.Scopes?.Split(" ") ?? ArraySegment<string>.Empty;
                 foreach (var scope in scopeArray)
                 {
@@ -101,6 +101,9 @@ public static class AuthFlowExtension
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCookiePolicy();
+
+        app.UseMiddleware<TokenCheckMiddleware>();
+        
         app.AddAuthEndpoints();
     }
 

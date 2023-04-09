@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace Gateway.Auth.Endpoints;
 
@@ -32,15 +33,19 @@ public static class AuthEndpoints
         });
     }
 
-    private static IResult UseLogoutEndpoint(string? redirectUrl, HttpContext? context)
+    private static IResult UseLogoutEndpoint(string? redirectUrl, HttpContext? context, IDistributedCache cache)
     {
         if (string.IsNullOrEmpty(redirectUrl))
         {
             redirectUrl = "/";
         }
 
-        context?.Session.Clear();
-        
+        if (context != null)
+        {
+            cache.RemoveAsync(context.Session.Id);
+            context.Session.Clear();
+        }
+
         var authProps = new AuthenticationProperties
         {
             RedirectUri = redirectUrl

@@ -49,11 +49,7 @@ public static class XsrfExtension
 
         app.Use(async (ctx, next) =>
         {
-            var antiforgery = app.Services.GetService<IAntiforgery>();
-            if (antiforgery == null)
-            {
-                throw new Exception("IAntiforgery service expected!");
-            }
+            var antiforgery = app.Services.GetRequiredService<IAntiforgery>();
 
             var currentUrl = ctx.Request.Path.ToString().ToLower();
             if (!await antiforgery.IsRequestValidAsync(ctx))

@@ -27,8 +27,7 @@ public class TokenExchangeService : ITokenExchangeService
         AddIfNotNull(payload, "scope", routeConfig?.Scopes);
 
         var result = await _authorityFacade.GetToken(payload);
-
-        // TODO: Add auto mapping
+        
         return new TokenExchangeResponse
         {
             AccessToken = result?.AccessToken ?? "",
