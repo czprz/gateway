@@ -4,8 +4,10 @@ namespace Gateway.Routing.Services;
 
 public interface IProxyManager
 {
-    Task<IReadOnlyList<RouteConfig>> GetRoutes();
-    void AddRoutes();
-    Task<ProxyManagerResult> AddRoute(RouteConfig route);
-    Task<ProxyManagerResult> RemoveRoute(string key);
+    void Start();
+    Task<IReadOnlyList<RouteConfig>> Get();
+    Task<ProxyManagerResult> Add(IList<RouteConfig> routes);
+    Task<ProxyManagerResult> Add(RouteConfig route);
+    Task<ProxyManagerResult> Update(IList<RouteConfig> routes);
+    Task<ProxyManagerResult> Remove(string key);
 }

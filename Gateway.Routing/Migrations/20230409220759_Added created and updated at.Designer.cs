@@ -4,6 +4,7 @@ using Gateway.Routing.Storage.Rational;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gateway.Routing.Migrations
 {
     [DbContext(typeof(RouteContext))]
-    partial class RouteContextModelSnapshot : ModelSnapshot
+    [Migration("20230409220759_Added created and updated at")]
+    partial class Addedcreatedandupdatedat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

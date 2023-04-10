@@ -4,6 +4,7 @@ public enum ProxyManagerResult
 {
     Ok,
     AlreadyExists,
+    OneOrMoreDidNotExist,
     NotFound,
     Error
 }

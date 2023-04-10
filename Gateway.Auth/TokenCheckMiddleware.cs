@@ -19,8 +19,9 @@ public class TokenCheckMiddleware
         if (context.Request.Path != "/logout" && context.Request.Path != "/login")
         {
             var token = context.Session.GetString(SessionKeys.ACCESS_TOKEN);
-            if (context.Session.IsAvailable && token == null)
+            if (context.User.Identity?.IsAuthenticated == true && token == null)
             {
+                // TODO: Add logic to avoid need for second refresh before token is fetched (only on service restart)
                 await context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
                 {
                     RedirectUri = "/"

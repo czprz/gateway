@@ -24,4 +24,7 @@ public class RouteConfigDb
     public LoadBalancingPolicyDb? LoadBalancingPolicy { get; set; }
     
     public ICollection<UpstreamDb> Upstreams { get; set; }
+    
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }
