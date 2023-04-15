@@ -264,3 +264,6 @@ FakesAssemblies/
 
 # Jetbrains
 .idea/
+
+# mssql
+data/
