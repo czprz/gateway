@@ -24,13 +24,6 @@ public class MemoryRoutingStorage : IRoutingRepository
                                _routes.Any(x => x.Value.GetMatchHash() == route.GetMatchHash()));
     }
 
-    public Task<bool> Exists(IEnumerable<RouteConfig> routes)
-    {
-        var keys = routes.Select(x => x.Id);
-        return Task.FromResult(_routes.Keys.Any(key => keys.Contains(key)) ||
-                               _routes.Values.Any(rc2 => routes.Any(rc => rc.GetMatchHash() == rc2.GetMatchHash())));
-    }
-
     public Task<IReadOnlyList<RouteConfig>> Get()
     {
         var routes = (IReadOnlyList<RouteConfig>)_routes.Values.ToList().AsReadOnly();
@@ -45,15 +38,8 @@ public class MemoryRoutingStorage : IRoutingRepository
 
     public Task<RouteConfig?> Get(RouteConfig route)
     {
-        var routeValue = _routes.TryGetValue(route.Id, out var route2) ? route2 : null;
+        var routeValue = _routes.Values.FirstOrDefault(x => x.MatchHashCode == route.MatchHashCode);
         return Task.FromResult(routeValue);
-    }
-
-    public Task<IReadOnlyList<RouteConfig>> Get(IEnumerable<RouteConfig> routes)
-    {
-        // TODO: Check hashcode
-        var routeConfigs = routes.Select(x => _routes.TryGetValue(x.Id, out var route) ? route : null).ToList();
-        return Task.FromResult((IReadOnlyList<RouteConfig>)routeConfigs.AsReadOnly());
     }
 
     public Task<bool> Save(RouteConfig route)
@@ -76,16 +62,6 @@ public class MemoryRoutingStorage : IRoutingRepository
     public Task<bool> Update(RouteConfig route)
     {
         _routes.TryUpdate(route.Id, route, route);
-
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> Update(IEnumerable<RouteConfig> routes)
-    {
-        foreach (var route in routes)
-        {
-            _routes.TryUpdate(route.Id, route, route);
-        }
 
         return Task.FromResult(true);
     }
