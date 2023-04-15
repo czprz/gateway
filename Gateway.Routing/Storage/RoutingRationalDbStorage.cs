@@ -1,5 +1,3 @@
-using AutoMapper;
-using Gateway.Routing.Models;
 using Gateway.Routing.Storage.Rational;
 using Gateway.Routing.Storage.Rational.Models;
 using Microsoft.EntityFrameworkCore;
@@ -9,114 +7,65 @@ namespace Gateway.Routing.Storage;
 
 public class RationalDbRoutingStorage : IRoutingRepository
 {
-    private readonly IMapper _mapper;
     private readonly ILogger<RationalDbRoutingStorage> _logger;
 
-    public RationalDbRoutingStorage(IMapper mapper, ILogger<RationalDbRoutingStorage> logger)
+    public RationalDbRoutingStorage(ILogger<RationalDbRoutingStorage> logger)
     {
-        _mapper = mapper;
         _logger = logger;
     }
 
-    public async Task<bool> Exists(string key)
+
+    public async Task<bool> Exists(Guid id)
     {
         await using var db = new RouteContext();
-
-        var anyRoute = await db.RouteConfigs.AnyAsync(x => x.Id == Guid.Parse(key));
+        
+        var anyRoute = await db.RouteConfigs.AnyAsync(x => x.Id == id);
         return anyRoute;
     }
 
-    public async Task<bool> Exists(RouteConfig route)
+    public async Task<bool> Exists(int hash)
     {
         await using var db = new RouteContext();
-
-        var anyRoute = await db.RouteConfigs.AnyAsync(x => x.MatchHashCode == route.GetMatchHash());
+        
+        var anyRoute = await db.RouteConfigs.AnyAsync(x => x.MatchHashCode == hash);
         return anyRoute;
     }
 
-    public async Task<bool> Exists(IEnumerable<RouteConfig> routes)
+    public async Task<IList<RouteConfigDb>> Get()
     {
         await using var db = new RouteContext();
-
-        var hashes = await db.RouteConfigs.Select(x => x.MatchHashCode).ToListAsync();
-        var anyRoutes = routes.All(x => hashes.Contains(x.GetMatchHash()));
-        return anyRoutes;
-    }
-
-    public async Task<IReadOnlyList<RouteConfig>> Get()
-    {
-        await using var db = new RouteContext();
-
-        var routeConfigDbs = await db.RouteConfigs
-            .Include(x => x.Hosts)
-            .Include(x => x.Methods)
-            .Include(x => x.Headers)
-            .ThenInclude(o => o.Values)
-            .Include(x => x.QueryParameters)
-            .ThenInclude(o => o.Values)
-            .Include(x => x.Upstreams)
-            .ToListAsync();
-
-        var routes = _mapper.Map<IReadOnlyList<RouteConfig>>(routeConfigDbs);
-
+        
+        var routes = await db.RouteConfigs.ToListAsync();
         return routes;
     }
 
-    public async Task<RouteConfig?> Get(string key)
+    public async Task<RouteConfigDb?> Get(Guid id)
     {
         await using var db = new RouteContext();
-
-        var routeConfigDb = await db.RouteConfigs.Include(x => x.Headers)
-            .FirstOrDefaultAsync(x => x.Id.ToString() == key);
-        if (routeConfigDb == null)
-        {
-            return null;
-        }
-
-        var route = _mapper.Map<RouteConfig>(routeConfigDb);
-
+        
+        var route = await db.RouteConfigs.FirstOrDefaultAsync(x => x.Id == id);
         return route;
     }
 
-    public async Task<RouteConfig?> Get(RouteConfig route)
+    public async Task<RouteConfigDb?> Get(int hash)
     {
-        try
-        {
-            await using var db = new RouteContext();
-
-            var routeConfigDbs = await db.RouteConfigs
-                .Include(x => x.Hosts)
-                .Include(x => x.Methods)
-                .Include(x => x.Headers)
-                .ThenInclude(o => o.Values)
-                .Include(x => x.QueryParameters)
-                .ThenInclude(o => o.Values)
-                .Include(x => x.Upstreams)
-                .Where(x => x.MatchHashCode == route.GetMatchHash())
-                .FirstOrDefaultAsync();
-
-            var routes = _mapper.Map<RouteConfig>(routeConfigDbs);
-            return routes;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Could not get route: {Message: 0}", ex.Message);
-            return await Task.FromResult<RouteConfig?>(null);
-        }
+        await using var db = new RouteContext();
+        
+        var route = await db.RouteConfigs.FirstOrDefaultAsync(x => x.MatchHashCode == hash);
+        return route;
     }
 
-    public async Task<bool> Save(RouteConfig route)
+    public async Task<bool> Save(RouteConfigDb route)
     {
         try
         {
             await using var db = new RouteContext();
             await db.Database.EnsureCreatedAsync();
 
-            var routeConfig = _mapper.Map<RouteConfigDb>(route);
-            await db.RouteConfigs.AddAsync(routeConfig);
-
+            await db.RouteConfigs.AddAsync(route);
+            
             await db.SaveChangesAsync();
-
+            
             return true;
         }
         catch (Exception ex)
@@ -126,13 +75,13 @@ public class RationalDbRoutingStorage : IRoutingRepository
         }
     }
 
-    public async Task<bool> Update(RouteConfig route)
+    public async Task<bool> Update(RouteConfigDb route)
     {
         try
         {
             await using var db = new RouteContext();
             await db.Database.EnsureCreatedAsync();
-
+            
             var routeConfigDb = await db.RouteConfigs
                 .Include(x => x.Hosts)
                 .Include(x => x.Methods)
@@ -141,7 +90,7 @@ public class RationalDbRoutingStorage : IRoutingRepository
                 .Include(x => x.QueryParameters)
                 .ThenInclude(o => o.Values)
                 .Include(x => x.Upstreams)
-                .Where(x => x.MatchHashCode == route.GetMatchHash())
+                .Where(x => x.MatchHashCode == route.MatchHashCode)
                 .FirstOrDefaultAsync();
 
             if (routeConfigDb == null)
@@ -150,6 +99,8 @@ public class RationalDbRoutingStorage : IRoutingRepository
             }
             
             routeConfigDb.UpdatedAt = DateTime.Now;
+            
+            // TODO: Missing update of non-match properties
 
             db.RouteConfigs.Update(routeConfigDb);
 
@@ -164,23 +115,22 @@ public class RationalDbRoutingStorage : IRoutingRepository
         }
     }
 
-    public async Task<bool> Remove(string key)
+    public async Task<bool> Remove(Guid id)
     {
         try
         {
             await using var db = new RouteContext();
             
-            var id = Guid.Parse(key);
-            var itemToRemove = await db.RouteConfigs.FindAsync(id);
-            if (itemToRemove == null)
+            var item = await db.RouteConfigs.FirstOrDefaultAsync(x => x.Id == id);
+            if (item == null)
             {
                 return false;
             }
             
-            db.RouteConfigs.Remove(itemToRemove);
-
+            db.RouteConfigs.Remove(item);
+            
             await db.SaveChangesAsync();
-
+            
             return true;
         }
         catch (Exception ex)

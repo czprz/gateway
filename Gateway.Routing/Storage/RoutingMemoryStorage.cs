@@ -1,78 +1,63 @@
 using System.Collections.Concurrent;
-using Gateway.Routing.Models;
+using Gateway.Routing.Storage.Rational.Models;
 
 namespace Gateway.Routing.Storage;
 
 public class MemoryRoutingStorage : IRoutingRepository
 {
-    private readonly ConcurrentDictionary<string, RouteConfig> _routes;
+    private readonly ConcurrentDictionary<string, RouteConfigDb> _routes;
 
     public MemoryRoutingStorage()
     {
-        _routes = new ConcurrentDictionary<string, RouteConfig>();
+        _routes = new ConcurrentDictionary<string, RouteConfigDb>();
     }
 
-    public Task<bool> Exists(string key)
+
+    public Task<bool> Exists(Guid id)
     {
-        var exists = _routes.ContainsKey(key);
+        var exists = _routes.ContainsKey(id.ToString());
         return Task.FromResult(exists);
     }
 
-    public Task<bool> Exists(RouteConfig route)
+    public Task<bool> Exists(int hash)
     {
-        return Task.FromResult(_routes.ContainsKey(route.Id) ||
-                               _routes.Any(x => x.Value.GetMatchHash() == route.GetMatchHash()));
+        var exists = _routes.Values.Any(x => x.MatchHashCode == hash);
+        return Task.FromResult(exists);
     }
 
-    public Task<IReadOnlyList<RouteConfig>> Get()
+    public Task<IList<RouteConfigDb>> Get()
     {
-        var routes = (IReadOnlyList<RouteConfig>)_routes.Values.ToList().AsReadOnly();
-        return Task.FromResult(routes);
+        var routes = _routes.Values.ToList();
+        return Task.FromResult((IList<RouteConfigDb>)routes);
     }
 
-    public Task<RouteConfig?> Get(string key)
+    public Task<RouteConfigDb?> Get(Guid id)
     {
-        var routeValue = _routes.TryGetValue(key, out var route) ? route : null;
-        return Task.FromResult(routeValue);
+        var route = _routes.TryGetValue(id.ToString(), out var routeConfigDb) ? routeConfigDb : null;
+        return Task.FromResult(route);
     }
 
-    public Task<RouteConfig?> Get(RouteConfig route)
+    public Task<RouteConfigDb?> Get(int hash)
     {
-        var routeValue = _routes.Values.FirstOrDefault(x => x.MatchHashCode == route.MatchHashCode);
-        return Task.FromResult(routeValue);
+        var route = _routes.Values.FirstOrDefault(x => x.MatchHashCode == hash);
+        return Task.FromResult(route);
     }
 
-    public Task<bool> Save(RouteConfig route)
+    public Task<bool> Save(RouteConfigDb route)
     {
-        _routes.TryAdd(route.Id, route);
-
-        return Task.FromResult(true);
+        var added = _routes.TryAdd(route.Id.ToString(), route);
+        return Task.FromResult(added);
     }
 
-    public Task<bool> Save(IEnumerable<RouteConfig> routes)
+    public Task<bool> Update(RouteConfigDb route)
     {
-        foreach (var route in routes)
-        {
-            _routes.TryAdd(route.Id, route);
-        }
-
-        return Task.FromResult(true);
+        var updated = _routes.TryUpdate(route.Id.ToString(), route, route);
+        return Task.FromResult(updated);
     }
 
-    public Task<bool> Update(RouteConfig route)
+    public Task<bool> Remove(Guid id)
     {
-        _routes.TryUpdate(route.Id, route, route);
-
-        return Task.FromResult(true);
-    }
-
-    public Task<bool> Remove(string key)
-    {
-        if (_routes.TryRemove(key, out _))
-        {
-            Task.FromResult(true);
-        }
-
-        return Task.FromResult(false);
+        var removed = _routes.TryRemove(id.ToString(), out _);
+        return Task.FromResult(removed);
     }
 }

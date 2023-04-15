@@ -13,4 +13,8 @@ public interface IConfig
     public string? Scopes { get; }
     public StorageType? StorageType { get; }
     public string? StorageConnectionString { get; }
+    
+    // Routing
+    public int CheckIntervalSeconds { get; }
+    public int InactiveTimeoutSeconds { get; }
 }

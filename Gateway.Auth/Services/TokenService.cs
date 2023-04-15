@@ -1,6 +1,6 @@
 using Gateway.Auth.Util;
 using Gateway.Routing.Models;
-using Gateway.Routing.Storage;
+using Gateway.Routing.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Yarp.ReverseProxy.Model;
@@ -11,15 +11,15 @@ public class TokenService : ITokenService
 {
     private readonly IApiTokenService _apiTokenService;
     private readonly ITokenRefreshService _tokenRefreshService;
-    private readonly IRoutingRepository _routingRepository;
+    private readonly IProxyFacade _proxyFacade;
     private readonly ILogger<TokenService> _logger;
 
     public TokenService(IApiTokenService apiTokenService, ITokenRefreshService tokenRefreshService,
-        IRoutingRepository routingRepository, ILogger<TokenService> logger)
+        IProxyFacade proxyFacade, ILogger<TokenService> logger)
     {
         _apiTokenService = apiTokenService;
         _tokenRefreshService = tokenRefreshService;
-        _routingRepository = routingRepository;
+        _proxyFacade = proxyFacade;
         _logger = logger;
     }
 
@@ -31,7 +31,7 @@ public class TokenService : ITokenService
             return;
         }
         
-        var routeConfig = await _routingRepository.Get(proxy.Route.Config.RouteId);
+        var routeConfig = await _proxyFacade.Get(proxy.Route.Config.RouteId);
         if (routeConfig == null)
         {
             return;

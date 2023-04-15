@@ -26,4 +26,7 @@ public class Config : IConfig
     
     public StorageType? StorageType => _options.Value.StorageType;
     public string? StorageConnectionString => _options.Value.StorageConnectionString;
+
+    public int CheckIntervalSeconds => _options.Value.CheckIntervalSeconds ?? 300;
+    public int InactiveTimeoutSeconds => _options.Value.InactiveTimeoutSeconds ?? 1800;
 }

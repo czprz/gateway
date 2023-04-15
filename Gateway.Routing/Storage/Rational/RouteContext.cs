@@ -7,6 +7,7 @@ public class RouteContext : DbContext
 {
     public DbSet<RouteConfigDb> RouteConfigs { get; set; }
     
+    // TODO: Should be moved to config
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlServer("Server=localhost;Database=Gateway;User Id=sa;Password=123456789Qwerty;TrustServerCertificate=True");
 }

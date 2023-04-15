@@ -32,18 +32,18 @@ public static class RoutingEndpoints
             .MapToApiVersion(1);
     }
 
-    private static async Task<IResult> GetRoutes(IProxyManager proxyManager)
+    private static async Task<IResult> GetRoutes(IProxyFacade proxyFacade)
     {
-        var routes = await proxyManager.Get();
+        var routes = await proxyFacade.Get();
 
         return routes.Count == 0 ? Results.NotFound() : Results.Ok(routes);
     }
 
-    private static async Task<IResult> AddRoutes([FromBody] RouteConfigDto routeConfigDto, IProxyManager proxyManager, IMapper mapper)
+    private static async Task<IResult> AddRoutes([FromBody] RouteConfigDto routeConfigDto, IProxyFacade proxyFacade, IMapper mapper)
     {
         var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
 
-        return await proxyManager.Add(route) switch
+        return await proxyFacade.Add(route) switch
         {
             ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
             ProxyManagerResult.AlreadyExists => Results.Conflict(),
@@ -51,11 +51,11 @@ public static class RoutingEndpoints
         };
     }
 
-    private static async Task<IResult> UpdateRoutes([FromBody] RouteConfigDto routeConfigDto, IMapper mapper, IProxyManager proxyManager)
+    private static async Task<IResult> UpdateRoutes([FromBody] RouteConfigDto routeConfigDto, IMapper mapper, IProxyFacade proxyFacade)
     {
         var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
 
-        return await proxyManager.Update(route) switch
+        return await proxyFacade.Update(route) switch
         {
             ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
             ProxyManagerResult.NotFound => Results.NotFound(),
@@ -63,9 +63,9 @@ public static class RoutingEndpoints
         };
     }
 
-    private static async Task<IResult> RemoveRoute(string route, IProxyManager proxyManager)
+    private static async Task<IResult> RemoveRoute(string route, IProxyFacade proxyFacade)
     {
-        return await proxyManager.Remove(route) switch
+        return await proxyFacade.Remove(route) switch
         {
             ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
             ProxyManagerResult.NotFound => Results.NotFound(),

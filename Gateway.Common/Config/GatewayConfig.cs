@@ -35,4 +35,10 @@ public record GatewayConfig
     
     [RegularExpression(@"^Server=(.+);Database=(.+);User Id=(.+);Password=(.+)$", ErrorMessage = "The connection string must be a valid SQL connection string.")]
     public string? StorageConnectionString { get; init; }
+    
+    [Range(1, 1800, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    public int? CheckIntervalSeconds { get; init; }
+
+    [Range(0, 3600, ErrorMessage = "Value for {0} must be between {1} and {2}.")]
+    public int? InactiveTimeoutSeconds { get; init; }
 }

@@ -1,6 +1,7 @@
 using Asp.Versioning.Builder;
 using Gateway.Common.Config;
 using Gateway.Routing.Endpoints;
+using Gateway.Routing.Hosted;
 using Gateway.Routing.Services;
 using Gateway.Routing.Storage;
 using Gateway.Routing.Storage.Rational;
@@ -18,17 +19,16 @@ public static class RoutingServiceExtension
 
         ChooseRoutingStorage(builder, config!);
 
-        builder.Services.AddTransient<IProxyManager, ProxyManager>();
+        builder.Services.AddTransient<IProxyFacade, ProxyFacade>();
         builder.Services.AddTransient<IYarpFacade, YarpFacade>();
-        
-        // TODO: Delete routes which are not used / updated
+
+        builder.Services.AddHostedService<ProxyManagerService>();
+        builder.Services.AddHostedService<RoutingMaintainerService>();
     }
 
     public static void UseRoutingService(this WebApplication app, ApiVersionSet versionSet)
     {
         app.AddRoutingEndpoints(versionSet);
-        
-        app.Services.GetService<IProxyManager>()?.Start();
     }
 
     private static void ChooseRoutingStorage(WebApplicationBuilder builder, IConfig config)
