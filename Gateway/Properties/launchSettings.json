@@ -1,12 +1,4 @@
 ﻿{
-  "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
-    "iisExpress": {
-      "applicationUrl": "http://localhost:56059",
-      "sslPort": 44351
-    }
-  },
   "profiles": {
     "http": {
       "commandName": "Project",
@@ -15,28 +7,25 @@
       "applicationUrl": "http://localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Gateway__URL": "http://localhost/test",
+        "Gateway__URL": "http://localhost",
         "Gateway__SessionTimeoutInMin": "30",
         "Gateway__Authority": "http://localhost:8080/realms/master/",
-        "Gateway__ConnectionString": "Server=localhost;Database=Gateway;User Id=sa;Password=Password123;",
         "Gateway__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
-        "Gateway__ClientId": "example"
+        "Gateway__ClientId": "gateway"
       }
     },
     "https": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7171;http://localhost:5053",
+      "applicationUrl": "https://localhost",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "Gateway__URL": "http://localhost",
+        "Gateway__SessionTimeoutInMin": "30",
+        "Gateway__Authority": "http://localhost:8080/realms/master/",
+        "Gateway__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
+        "Gateway__ClientId": "gateway"
       }
     }
   }
