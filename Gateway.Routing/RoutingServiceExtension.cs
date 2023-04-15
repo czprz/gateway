@@ -20,6 +20,8 @@ public static class RoutingServiceExtension
 
         builder.Services.AddTransient<IProxyManager, ProxyManager>();
         builder.Services.AddTransient<IYarpFacade, YarpFacade>();
+        
+        // TODO: Delete routes which are not used / updated
     }
 
     public static void UseRoutingService(this WebApplication app, ApiVersionSet versionSet)

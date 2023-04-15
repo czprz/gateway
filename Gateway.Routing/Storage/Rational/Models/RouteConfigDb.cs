@@ -8,6 +8,8 @@ public class RouteConfigDb
 {
     [Key]
     public Guid Id { get; set; }
+    public int MatchHashCode { get; set; }
+    
     public string? Path { get; set; }
     public ICollection<MethodDb> Methods { get; set; }
     public ICollection<HostDb> Hosts { get; set; }

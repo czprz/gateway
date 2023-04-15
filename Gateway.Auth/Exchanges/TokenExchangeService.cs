@@ -1,4 +1,5 @@
 using Gateway.Auth.Util;
+using Gateway.Common.Extensions;
 using Gateway.Routing.Models;
 
 namespace Gateway.Auth.Exchanges;
@@ -21,10 +22,10 @@ public class TokenExchangeService : ITokenExchangeService
             ["requested_token_type"] = "urn:ietf:params:oauth:token-type:refresh_token"
         };
         
-        AddIfNotNull(payload, "client_secret", routeConfig?.ClientSecret);
-        AddIfNotNull(payload, "client_id", routeConfig?.ClientId);
-        AddIfNotNull(payload, "audience", routeConfig?.Audience);
-        AddIfNotNull(payload, "scope", routeConfig?.Scopes);
+        payload.AddIfNotEmpty("client_secret", routeConfig?.ClientSecret);
+        payload.AddIfNotEmpty("client_id", routeConfig?.ClientId);
+        payload.AddIfNotEmpty("audience", routeConfig?.Audience);
+        payload.AddIfNotEmpty("scope", routeConfig?.Scopes);
 
         var result = await _authorityFacade.GetToken(payload);
         
@@ -35,13 +36,5 @@ public class TokenExchangeService : ITokenExchangeService
             ExpiresIn = result?.Expires ?? 0,
             TokenType = result?.TokenType ?? ""
         };
-    }
-    
-    private static void AddIfNotNull(IDictionary<string, string> dict, string key, string? value)
-    {
-        if (value != null)
-        {
-            dict[key] = value;
-        }
     }
 }

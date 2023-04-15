@@ -39,11 +39,11 @@ public static class RoutingEndpoints
         return routes.Count == 0 ? Results.NotFound() : Results.Ok(routes);
     }
 
-    private static async Task<IResult> AddRoutes([FromBody] RouteConfigDto[] routeConfigDto, IProxyManager proxyManager, IMapper mapper)
+    private static async Task<IResult> AddRoutes([FromBody] RouteConfigDto routeConfigDto, IProxyManager proxyManager, IMapper mapper)
     {
-        var routes = mapper.Map<IList<RouteConfigDto>, IList<RouteConfig>>(routeConfigDto);
+        var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
 
-        return await proxyManager.Add(routes) switch
+        return await proxyManager.Add(route) switch
         {
             ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
             ProxyManagerResult.AlreadyExists => Results.Conflict(),
@@ -51,14 +51,14 @@ public static class RoutingEndpoints
         };
     }
 
-    private static async Task<IResult> UpdateRoutes([FromBody] RouteConfigDto[] routeConfigDto, IMapper mapper, IProxyManager proxyManager)
+    private static async Task<IResult> UpdateRoutes([FromBody] RouteConfigDto routeConfigDto, IMapper mapper, IProxyManager proxyManager)
     {
-        var routes = mapper.Map<IList<RouteConfigDto>, IList<RouteConfig>>(routeConfigDto);
+        var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
 
-        return await proxyManager.Update(routes) switch
+        return await proxyManager.Update(route) switch
         {
             ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
-            ProxyManagerResult.OneOrMoreDidNotExist => Results.Conflict(),
+            ProxyManagerResult.NotFound => Results.NotFound(),
             _ => Results.Ok()
         };
     }

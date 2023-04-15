@@ -20,18 +20,15 @@ public class MemoryRoutingStorage : IRoutingRepository
 
     public Task<bool> Exists(RouteConfig route)
     {
-        // TODO: Add more adv. check
-        var exists = _routes.ContainsKey(route.Id);
-        return Task.FromResult(exists);
+        return Task.FromResult(_routes.ContainsKey(route.Id) ||
+                               _routes.Any(x => x.Value.GetMatchHash() == route.GetMatchHash()));
     }
 
     public Task<bool> Exists(IEnumerable<RouteConfig> routes)
     {
-        // TODO: Add more adv. check
         var keys = routes.Select(x => x.Id);
-        var result = _routes.Keys.Any(key => keys.Contains(key));
-
-        return Task.FromResult(result);
+        return Task.FromResult(_routes.Keys.Any(key => keys.Contains(key)) ||
+                               _routes.Values.Any(rc2 => routes.Any(rc => rc.GetMatchHash() == rc2.GetMatchHash())));
     }
 
     public Task<IReadOnlyList<RouteConfig>> Get()
@@ -46,13 +43,21 @@ public class MemoryRoutingStorage : IRoutingRepository
         return Task.FromResult(routeValue);
     }
 
+    public Task<RouteConfig?> Get(RouteConfig route)
+    {
+        var routeValue = _routes.TryGetValue(route.Id, out var route2) ? route2 : null;
+        return Task.FromResult(routeValue);
+    }
+
+    public Task<IReadOnlyList<RouteConfig>> Get(IEnumerable<RouteConfig> routes)
+    {
+        // TODO: Check hashcode
+        var routeConfigs = routes.Select(x => _routes.TryGetValue(x.Id, out var route) ? route : null).ToList();
+        return Task.FromResult((IReadOnlyList<RouteConfig>)routeConfigs.AsReadOnly());
+    }
+
     public Task<bool> Save(RouteConfig route)
     {
-        if (_routes.ContainsKey(route.Id))
-        {
-            _routes[route.Id] = route;
-        }
-
         _routes.TryAdd(route.Id, route);
 
         return Task.FromResult(true);
@@ -62,11 +67,6 @@ public class MemoryRoutingStorage : IRoutingRepository
     {
         foreach (var route in routes)
         {
-            if (_routes.ContainsKey(route.Id))
-            {
-                _routes[route.Id] = route;
-            }
-
             _routes.TryAdd(route.Id, route);
         }
 
@@ -76,7 +76,7 @@ public class MemoryRoutingStorage : IRoutingRepository
     public Task<bool> Update(RouteConfig route)
     {
         _routes.TryUpdate(route.Id, route, route);
-        
+
         return Task.FromResult(true);
     }
 
@@ -86,7 +86,7 @@ public class MemoryRoutingStorage : IRoutingRepository
         {
             _routes.TryUpdate(route.Id, route, route);
         }
-        
+
         return Task.FromResult(true);
     }
 

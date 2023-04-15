@@ -11,8 +11,9 @@ public class RouteConfigDbMaps : Profile
         CreateMap<RouteConfig, RouteConfigDb>()
             .ForMember(d => d.Id, opt => opt.MapFrom(o => Guid.Parse(o.Id)))
             .ForMember(d => d.CreatedAt, opt => opt.MapFrom(o => DateTime.Now))
+            .ForMember(d => d.MatchHashCode, opt => opt.MapFrom(o => o.MatchHashCode ?? o.GetMatchHash()))
             .ReverseMap();
-        
+
         // Methods mapping
         CreateMap<string, MethodDb>()
             .ForMember(d => d.Method, opt => opt.MapFrom(o => o));

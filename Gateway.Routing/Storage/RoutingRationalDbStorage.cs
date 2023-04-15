@@ -30,8 +30,7 @@ public class RationalDbRoutingStorage : IRoutingRepository
     {
         await using var db = new RouteContext();
 
-        // TODO: Add more adv. check
-        var anyRoute = await db.RouteConfigs.AnyAsync(x => x.Id == Guid.Parse(route.Id));
+        var anyRoute = await db.RouteConfigs.AnyAsync(x => x.MatchHashCode == route.GetMatchHash());
         return anyRoute;
     }
 
@@ -39,10 +38,9 @@ public class RationalDbRoutingStorage : IRoutingRepository
     {
         await using var db = new RouteContext();
 
-        var keys = routes.Select(x => x.Id);
-        var anyRoute = await db.RouteConfigs.AnyAsync(x => keys.Contains(x.Id.ToString()));
-
-        return anyRoute;
+        var hashes = await db.RouteConfigs.Select(x => x.MatchHashCode).ToListAsync();
+        var anyRoutes = routes.All(x => hashes.Contains(x.GetMatchHash()));
+        return anyRoutes;
     }
 
     public async Task<IReadOnlyList<RouteConfig>> Get()
@@ -80,6 +78,33 @@ public class RationalDbRoutingStorage : IRoutingRepository
         return route;
     }
 
+    public async Task<RouteConfig?> Get(RouteConfig route)
+    {
+        try
+        {
+            await using var db = new RouteContext();
+
+            var routeConfigDbs = await db.RouteConfigs
+                .Include(x => x.Hosts)
+                .Include(x => x.Methods)
+                .Include(x => x.Headers)
+                .ThenInclude(o => o.Values)
+                .Include(x => x.QueryParameters)
+                .ThenInclude(o => o.Values)
+                .Include(x => x.Upstreams)
+                .Where(x => x.MatchHashCode == route.GetMatchHash())
+                .FirstOrDefaultAsync();
+
+            var routes = _mapper.Map<RouteConfig>(routeConfigDbs);
+            return routes;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Could not get route: {Message: 0}", ex.Message);
+            return await Task.FromResult<RouteConfig?>(null);
+        }
+    }
+
     public async Task<bool> Save(RouteConfig route)
     {
         try
@@ -101,66 +126,40 @@ public class RationalDbRoutingStorage : IRoutingRepository
         }
     }
 
-    public async Task<bool> Save(IEnumerable<RouteConfig> routes)
-    {
-        try
-        {
-            await using var db = new RouteContext();
-            await db.Database.EnsureCreatedAsync();
-            
-            var routeConfigs = _mapper.Map<IEnumerable<RouteConfigDb>>(routes);
-            
-            await db.RouteConfigs.AddRangeAsync(routeConfigs);
-
-            await db.SaveChangesAsync();
-            
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Could not save routes: {Message: 0}", ex.Message);
-            return false;
-        }
-    }
-
     public async Task<bool> Update(RouteConfig route)
     {
         try
         {
             await using var db = new RouteContext();
             await db.Database.EnsureCreatedAsync();
+
+            var routeConfigDb = await db.RouteConfigs
+                .Include(x => x.Hosts)
+                .Include(x => x.Methods)
+                .Include(x => x.Headers)
+                .ThenInclude(o => o.Values)
+                .Include(x => x.QueryParameters)
+                .ThenInclude(o => o.Values)
+                .Include(x => x.Upstreams)
+                .Where(x => x.MatchHashCode == route.GetMatchHash())
+                .FirstOrDefaultAsync();
+
+            if (routeConfigDb == null)
+            {
+                return false;
+            }
             
-            var routeConfig = _mapper.Map<RouteConfigDb>(route);
-            db.RouteConfigs.Update(routeConfig);
-            
+            routeConfigDb.UpdatedAt = DateTime.Now;
+
+            db.RouteConfigs.Update(routeConfigDb);
+
             await db.SaveChangesAsync();
-            
+
             return true;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Could not update route: {Message: 0}", ex.Message);
-            return false;
-        }
-    }
-
-    public async Task<bool> Update(IEnumerable<RouteConfig> routes)
-    {
-        try
-        {
-            await using var db = new RouteContext();
-            await db.Database.EnsureCreatedAsync();
-            
-            var routeConfigs = _mapper.Map<IEnumerable<RouteConfigDb>>(routes);
-            db.RouteConfigs.UpdateRange(routeConfigs);
-            
-            await db.SaveChangesAsync();
-            
-            return true;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Could not update routes: {Message: 0}", ex.Message);
             return false;
         }
     }

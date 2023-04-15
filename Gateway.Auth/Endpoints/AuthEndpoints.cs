@@ -20,31 +20,28 @@ public static class AuthEndpoints
             .WithTags("Authentication");
     }
 
-    private static void UseLoginEndpoint(string? redirectUrl, HttpContext? context)
+    private static void UseLoginEndpoint(string? redirectUrl, HttpContext context)
     {
         if (string.IsNullOrEmpty(redirectUrl))
         {
             redirectUrl = "/";
         }
 
-        context?.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
+        context.ChallengeAsync(OpenIdConnectDefaults.AuthenticationScheme, new AuthenticationProperties
         {
             RedirectUri = redirectUrl
         });
     }
 
-    private static IResult UseLogoutEndpoint(string? redirectUrl, HttpContext? context, IDistributedCache cache)
+    private static IResult UseLogoutEndpoint(string? redirectUrl, HttpContext context, IDistributedCache cache)
     {
         if (string.IsNullOrEmpty(redirectUrl))
         {
             redirectUrl = "/";
         }
 
-        if (context != null)
-        {
-            cache.RemoveAsync(context.Session.Id);
-            context.Session.Clear();
-        }
+        cache.RemoveAsync(context.Session.Id);
+        context.Session.Clear();
 
         var authProps = new AuthenticationProperties
         {

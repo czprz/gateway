@@ -163,6 +163,9 @@ namespace Gateway.Routing.Migrations
                     b.Property<int?>("LoadBalancingPolicy")
                         .HasColumnType("int");
 
+                    b.Property<int>("MatchHashCode")
+                        .HasColumnType("int");
+
                     b.Property<string>("Path")
                         .HasColumnType("nvarchar(max)");
 
