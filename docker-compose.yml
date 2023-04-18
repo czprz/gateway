@@ -1,0 +1,61 @@
+version: "3.9"
+services:
+  proxy:
+    build: .
+    networks:
+      mynetwork:
+        aliases:
+          - myapp
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      Gateway__URL: "http://localhost"
+      Gateway__SessionTimeoutInMin: "30"
+      Gateway__Authority: "http://keycloak/realms/master/"
+      Gateway__AuthorityDiscoveryUrl: ".well-known/openid-configuration"
+      Gateway__ClientId: "gateway"
+      Gateway__StorageType: "SQLServer"
+      Gateway__StorageConnectionString: "Server=mssql;Database=Gateway;User Id=sa;Password=123456789Qwerty;TrustServerCertificate=True"
+    depends_on:
+      mssql:
+        condition: service_healthy
+        restart: true
+      keycloak:
+        condition: service_started
+    restart: on-failure
+      
+  keycloak:
+    image: "quay.io/keycloak/keycloak:21.0.1"
+    networks:
+      mynetwork:
+        aliases:
+          - keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KEYCLOAK_ADMIN: "admin"
+      KEYCLOAK_ADMIN_PASSWORD: "admin"
+    command:
+      - start-dev --features=token-exchange --health-enabled=true
+      
+  mssql:
+    image: "mcr.microsoft.com/mssql/server:2019-latest"
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools/bin/sqlcmd", "-Usa", "-P123456789Qwerty", "-Q", "select 1"]
+      timeout: 10s
+      retries: 3
+    restart: on-failure
+    networks:
+      mynetwork:
+        aliases:
+         - mssql
+    ports:
+      - "1433:1433"
+    environment:
+      MSSQL_SA_PASSWORD: "123456789Qwerty"
+      ACCEPT_EULA: "Y"
+
+networks:
+  mynetwork:
+    driver: bridge
