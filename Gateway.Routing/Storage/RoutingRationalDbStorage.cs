@@ -14,7 +14,6 @@ public class RationalDbRoutingStorage : IRoutingRepository
         _logger = logger;
     }
 
-
     public async Task<bool> Exists(Guid id)
     {
         await using var db = new RouteContext();

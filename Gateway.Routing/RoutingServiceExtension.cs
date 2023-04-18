@@ -39,6 +39,8 @@ public static class RoutingServiceExtension
             {
                 builder.Services.AddTransient<IRoutingRepository, RationalDbRoutingStorage>();
                 
+                StorageConnectionString.Set(config.StorageConnectionString!);
+                
                 using var dbContext = new RouteContext();
                 dbContext.Database.Migrate();
 
