@@ -11,6 +11,9 @@ public class Config : IConfig
         _options = options;
     }
 
+
+    public string Url { get; set; }
+    
     public bool AuthFlowEnabled => !string.IsNullOrWhiteSpace(_options.Value.AuthorityDiscoveryUrl);
     public string AuthFlowKey => "authPolicy";
     public int SessionTimeoutInMin => _options.Value.SessionTimeoutInMin ?? 10;

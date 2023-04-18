@@ -2,6 +2,8 @@ namespace Gateway.Common.Config;
 
 public interface IConfig
 {
+    public string Url { get; set; }
+    
     public bool AuthFlowEnabled { get; }
     public string AuthFlowKey { get; }
     public int SessionTimeoutInMin { get; }

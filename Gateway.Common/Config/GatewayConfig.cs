@@ -5,6 +5,10 @@ namespace Gateway.Common.Config;
 
 public record GatewayConfig
 {
+    [Required(ErrorMessage = "The URL is required.")]
+    [Url(ErrorMessage = "The URL must be a valid URL.")]
+    public string Url { get; init; } = "";
+    
     [Required(ErrorMessage = "The authority is required.")]
     [Url(ErrorMessage = "The Authority must be a valid URL.")]
     [RegularExpression(@".+/$", ErrorMessage = "The URL must end with a trailing slash.")]
