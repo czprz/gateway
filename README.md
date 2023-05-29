@@ -55,13 +55,13 @@ request.
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see
-the [releases on this repository](https://github.com/czprz/dever-version-checker-api/releases).
+the [releases on this repository](https://github.com/czprz/gateway/releases).
 
 ## Authors
 
 * **[Casper Overholm Elkrog](https://github.com/czprz)**
 
-See also the list of [contributors](https://github.com/czprz/dever-version-checker-api/network/) who participated in this project.
+See also the list of [contributors](https://github.com/czprz/gateway/network/) who participated in this project.
 
 ## License
 
