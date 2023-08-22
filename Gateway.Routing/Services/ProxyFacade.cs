@@ -26,6 +26,7 @@ public class ProxyFacade : IProxyFacade
     {
         var routes = await _routingRepository.Get();
 
+        // TODO: Remove this, instead have it as a migration step
         AddAuthority(routes);
 
         return _mapper.Map<IReadOnlyList<RouteConfig>>(routes);
@@ -113,7 +114,7 @@ public class ProxyFacade : IProxyFacade
         // TODO: Add passing of X-Forwarded-Proto header
         routes.Add(new RouteConfigDb
         {
-            Path = _config.Authority.Route!.LocalPath + "/{**catch-all}",
+            Path = _config.Authority.Route!.LocalPath + "{**catch-all}",
             Transforms = new List<TransformDb>
             {
                 new()
