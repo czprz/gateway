@@ -28,7 +28,7 @@ public class AuthorityFacade : IAuthorityFacade
     {
         var client = _httpClientFactory.CreateClient("authority_endpoint");
         
-        var doc = await client.GetFromJsonAsync<DiscoveryDocument>(_config.AuthorityDiscoveryUrl);
+        var doc = await client.GetFromJsonAsync<DiscoveryDocument>(_config.Authority.DiscoveryUrl);
 
         _discoveryDocument = doc ?? throw new Exception("Unable to load discovery document.");
     }

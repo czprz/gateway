@@ -11,6 +11,8 @@ public class RouteConfigMaps : Profile
         CreateMap<RouteConfigDto, RouteConfig>()
             .ForMember(x => x.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
             .ReverseMap();
+        CreateMap<TransformsDto, Transforms>()
+            .ReverseMap();
         CreateMap<QueryParameterDto, QueryParameterMatch>()
             .ReverseMap();
         CreateMap<HeaderDto, HeaderMatch>()

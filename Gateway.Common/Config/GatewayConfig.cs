@@ -5,13 +5,12 @@ namespace Gateway.Common.Config;
 
 public record GatewayConfig
 {
-    [Required(ErrorMessage = "The URL is required.")]
-    [Url(ErrorMessage = "The URL must be a valid URL.")]
-    public string Url { get; init; } = "";
+    // TODO: Custom validation to check whether it's an URL or a path
+    public string? AuthorityUrl { get; init; }
     
     [Required(ErrorMessage = "The authority is required.")]
-    [Url(ErrorMessage = "The Authority must be a valid URL.")]
-    [RegularExpression(@".+/$", ErrorMessage = "The URL must end with a trailing slash.")]
+    // [Url(ErrorMessage = "The Authority must be a valid URL.")]
+    // [RegularExpression(@".+/$", ErrorMessage = "The URL must end with a trailing slash.")]
     public string Authority { get; init; } = "";
     
     [Required(ErrorMessage = "The authority discovery URL is required.")]

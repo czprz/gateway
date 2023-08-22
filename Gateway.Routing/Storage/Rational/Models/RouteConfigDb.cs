@@ -23,8 +23,10 @@ public class RouteConfigDb
     public string? Audience { get; set; }
     public string? Scopes { get; set; }
     
-    public LoadBalancingPolicyDb? LoadBalancingPolicy { get; set; }
+    public ICollection<TransformDb>? Transforms { get; set; }
     
+    public LoadBalancingPolicyDb? LoadBalancingPolicy { get; set; }
+
     public ICollection<UpstreamDb> Upstreams { get; set; }
     
     public DateTime CreatedAt { get; set; }

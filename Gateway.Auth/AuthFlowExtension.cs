@@ -22,7 +22,7 @@ public static class AuthFlowExtension
 
         builder.Services.AddHttpClient("authority_endpoint", client =>
             {
-                client.BaseAddress = new Uri(config.Authority, UriKind.RelativeOrAbsolute);
+                client.BaseAddress = new Uri(config.Authority.Address, UriKind.RelativeOrAbsolute);
             });
 
         // Discovery
@@ -63,7 +63,7 @@ public static class AuthFlowExtension
             .AddOpenIdConnect(opt =>
             {
                 opt.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                opt.Authority = config.Authority;
+                opt.Authority = config.Authority.Address;
                 opt.ClientId = config.ClientId;
                 opt.UsePkce = true;
                 opt.ClientSecret = config.ClientSecret;

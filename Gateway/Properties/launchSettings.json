@@ -7,10 +7,10 @@
       "applicationUrl": "http://localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Gateway__URL": "http://localhost",
         "Gateway__SessionTimeoutInMin": "30",
-        "Gateway__Authority": "http://localhost:8080/realms/master/",
-        "Gateway__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
+        "Gateway__AuthorityUrl": "/auth",
+        "Gateway__Authority": "http://localhost:8080",
+        "Gateway__AuthorityDiscoveryUrl": "realms/master/.well-known/openid-configuration",
         "Gateway__ClientId": "gateway",
         "Gateway__StorageType": "SQLServer",
         "Gateway__StorageConnectionString": "Server=localhost;Database=Gateway;User Id=sa;Password=123456789Qwerty;TrustServerCertificate=True"
@@ -25,6 +25,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "Gateway__URL": "http://localhost",
         "Gateway__SessionTimeoutInMin": "30",
+        "Gateway__AuthorityUrl": "http://localhost:8080/realms/master/",
         "Gateway__Authority": "http://localhost:8080/realms/master/",
         "Gateway__AuthorityDiscoveryUrl": ".well-known/openid-configuration",
         "Gateway__ClientId": "gateway",

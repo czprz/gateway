@@ -17,6 +17,8 @@ public class RouteConfig
     public string? ClientSecret { get; init; }
     public string? Audience { get; init; }
     public string? Scopes { get; init; }
+    
+    public Transforms? Transforms { get; init; }
 
     public LoadBalancingPolicy? LoadBalancingPolicy { get; init; }
 
@@ -35,4 +37,18 @@ public class RouteConfig
         return (Headers ?? Array.Empty<HeaderMatch>()).Aggregate(hash,
             (current, header) => current * 23 + header.GetHashCode());
     }
+}
+
+public class Transforms
+{
+    public RequestTransform? RequestTransform { get; set; }
+}
+
+public class RequestTransform
+{
+    public string? PathPrefix { get; set; }
+    public string? PathRemovePrefix { get; set; }
+    public string? PathSet { get; set; }
+    public XForwarded? XForwarded { get; set; }
+    public Forwarded? Forwarded { get; set; }
 }

@@ -19,17 +19,17 @@ public class RouteConfigDbMaps : Profile
             .ForMember(d => d.Method, opt => opt.MapFrom(o => o));
         CreateMap<MethodDb, string>()
             .ConvertUsing(d => d.Method);
-        
+
         // Hosts mapping
         CreateMap<string, HostDb>()
             .ForMember(d => d.Host, opt => opt.MapFrom(o => o));
         CreateMap<HostDb, string>()
             .ConvertUsing(d => d.Host);
-        
+
         // Upstreams mapping
         CreateMap<Upstream, UpstreamDb>()
             .ReverseMap();
-        
+
         // Query parameter match values mapping
         CreateMap<QueryParameterMatch, QueryParameterMatchDb>()
             .ForMember(d => d.Values,
@@ -39,7 +39,7 @@ public class RouteConfigDbMaps : Profile
             .ForMember(d => d.Values,
                 opt => opt.MapFrom(o =>
                     o.Values == null ? null : o.Values.Select(v => v.Value)));
-        
+
         // Header match values mapping
         CreateMap<HeaderMatch, HeaderMatchDb>()
             .ForMember(d => d.Values,
@@ -49,5 +49,11 @@ public class RouteConfigDbMaps : Profile
             .ForMember(d => d.Values,
                 opt => opt.MapFrom(o =>
                     o.Values == null ? null : o.Values.Select(v => v.Value)));
+
+        // Transform mapping
+        CreateMap<Transforms, ICollection<TransformDb>>()
+            .ConvertUsing(s => s.Map());
+        CreateMap<ICollection<TransformDb>, Transforms>()
+            .ConvertUsing(s => s.Map());
     }
 }

@@ -28,17 +28,27 @@ public class RouteConfigDto
     public string? Audience { get; init; }
     public string? Scopes { get; init; }
     
-    // TODO: Improve this
-    public IReadOnlyList<IReadOnlyDictionary<string, string>>? Transforms { get; init; }
-    
+    public TransformsDto? Transforms { get; init; }
+
     /// <summary>
     /// Use to choose the load balancing policy (default is PowerOfTwoChoices)
     /// </summary>
     public LoadBalancingPolicy? LoadBalancingPolicy { get; init; }
-    
+
     // TODO: Add validator, must have at least one upstream
     /// <summary>
     /// Use for sending requests to the upstream and load balancing
     /// </summary>
     public IReadOnlyList<UpstreamDto> Upstreams { get; init; }
+}
+
+public class TransformsDto
+{
+    public RequestTransformDto? RequestTransform { get; init; }
+}
+
+public class RequestTransformDto
+{
+    public string PathPrefix { get; set; } = string.Empty;
+    public string PathRemovePrefix { get; set; } = string.Empty;
 }
