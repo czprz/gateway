@@ -64,13 +64,14 @@ public class ProxyFacade : IProxyFacade
             : ProxyManagerResult.Error;
     }
 
-    public async Task<ProxyManagerResult> Update(RouteConfig route)
+    public async Task<ProxyManagerResult> Update(Guid routeId, RouteConfig route)
     {
-        var hash = route.GetHashCode();
-        if (!await _routingRepository.Exists(hash))
+        if (!await _routingRepository.Exists(routeId))
         {
             return ProxyManagerResult.NotFound;
         }
+        
+        // TODO: Update not working, need to fix
 
         var routeDb = _mapper.Map<RouteConfigDb>(route);
         if (!await _routingRepository.Update(routeDb))

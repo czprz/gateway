@@ -1,5 +1,6 @@
 using Asp.Versioning.Builder;
 using AutoMapper;
+using Gateway.Common.Extensions;
 using Gateway.Routing.Endpoints.Models;
 using Gateway.Routing.Models;
 using Gateway.Routing.Services;
@@ -18,7 +19,7 @@ public static class RoutingEndpoints
             .WithTags("Routing")
             .WithApiVersionSet(apiVersionSet)
             .MapToApiVersion(1);
-        app.MapPut("api/routes", UpdateRoutes)
+        app.MapPut("api/routes/{routeId}", UpdateRoutes)
             .WithTags("Routing")
             .WithApiVersionSet(apiVersionSet)
             .MapToApiVersion(1);
@@ -51,11 +52,13 @@ public static class RoutingEndpoints
         };
     }
 
-    private static async Task<IResult> UpdateRoutes([FromBody] RouteConfigDto routeConfigDto, IMapper mapper, IProxyFacade proxyFacade)
+    // TODO: Add validation check, if routeId is a valid Guid
+    private static async Task<IResult> UpdateRoutes(string routeId, [FromBody] RouteConfigDto routeConfigDto, IMapper mapper, IProxyFacade proxyFacade)
     {
         var route = mapper.Map<RouteConfigDto, RouteConfig>(routeConfigDto);
+        var routeGuid = routeId.ToGuid();
 
-        return await proxyFacade.Update(route) switch
+        return await proxyFacade.Update(routeGuid, route) switch
         {
             ProxyManagerResult.Error => Results.StatusCode(StatusCodes.Status500InternalServerError),
             ProxyManagerResult.NotFound => Results.NotFound(),

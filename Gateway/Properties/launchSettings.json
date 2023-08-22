@@ -22,7 +22,7 @@
       "applicationUrl": "https://localhost",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Gateway__URL": "http://localhost",
+        "Gateway__URL": "https://localhost",
         "Gateway__SessionTimeoutInMin": "30",
         "Gateway__AuthorityUrl": "http://localhost:8080/realms/master/",
         "Gateway__Authority": "http://localhost:8080/realms/master/",
