@@ -1,6 +1,6 @@
-# Gateway
+# Secure API Gateway
 
-Reverse proxy gateway using Yarp with the logic to pass/exchange token for upstream services and API for registering routes
+Our Secure API Gateway is a powerful solution designed to streamline and enhance the security of your microservices architecture. It offers token rotation capabilities to protect sensitive authentication tokens and allows you to dynamically register routes using a user-friendly REST API. This service is a vital component for any organization seeking to maintain robust security while ensuring efficient communication between clients and services.
 
 ## Getting Started
 
